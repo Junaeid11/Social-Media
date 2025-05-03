@@ -79,7 +79,7 @@ const Rightbar = () => {
               style={{ height: "calc(100vh - 4rem)"}}
             >
               {/* Premium Banner */}
-              <div>
+              {/* <div>
                 <motion.div
                   className="p-3 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-xl text-white relative overflow-hidden"
                   initial={{ opacity: 0, y: 20 }}
@@ -100,7 +100,7 @@ const Rightbar = () => {
                     Upgrade Now
                   </motion.button>
                 </motion.div>
-              </div>
+              </div> */}
 
               {/* Navigation Menu */}
               <motion.div
@@ -193,32 +193,7 @@ const Rightbar = () => {
               </div>
 
               {/* Upcoming Events */}
-              {/* <div className="bg-gray-50 rounded-xl p-3">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-md font-semibold text-gray-800 px-2">Upcoming Events</h4>
-                  <BsCalendarEvent className="text-orange-500" />
-                </div>
-                {upcomingEvents.map((event, index) => (
-                  <motion.div
-                    key={index}
-                    className="bg-white p-3 rounded-lg mb-2 hover:shadow-md transition-all duration-300 cursor-pointer"
-                    whileHover={{ scale: 1.02 }}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h5 className="font-medium text-gray-800">{event.name}</h5>
-                        <p className="text-xs text-gray-500">{event.date} • {event.attendees} attending</p>
-                      </div>
-                      <motion.button
-                        className="bg-indigo-100 text-indigo-600 text-xs px-2 py-1 rounded-md font-medium"
-                        whileHover={{ backgroundColor: "#4F46E520" }}
-                      >
-                        RSVP
-                      </motion.button>
-                    </div>
-                  </motion.div>
-                ))}
-              </div> */}
+
 
               {/* User Suggestions */}
               <div className="bg-gray-50 rounded-xl p-3">

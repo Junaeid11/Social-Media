@@ -22,7 +22,7 @@ const FriendList = ({ users, user }) => {
           {friends.map((friend) => (
             <Link
               key={friend._id}
-              href={`profile/${friend._id}`}
+              href={`/profile/${friend._id}`}
               className="relative group flex flex-col items-center p-2 transition-transform transform hover:scale-105 cursor-pointer"
             >
               <img

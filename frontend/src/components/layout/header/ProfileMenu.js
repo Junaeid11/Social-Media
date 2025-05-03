@@ -70,24 +70,7 @@ const ProfileMenu = ({ userDetails }) => {
     router.push('/login')
   }
 
-  // Dummy data for notifications and messages
-  const notifications = [
-    { id: 1, content: 'Alex liked your post', time: '2m ago', read: false },
-    { id: 2, content: 'New comment on your photo', time: '1h ago', read: false },
-    { id: 3, content: 'Emma started following you', time: '3h ago', read: true }
-  ]
 
-  const messages = [
-    { id: 1, sender: 'Sarah Wilson', content: 'Hey, how are you doing?', time: '5m ago', avatar: 'https://i.pravatar.cc/150?img=29' },
-    { id: 2, sender: 'Mike Johnson', content: 'Did you see the latest update?', time: '2h ago', avatar: 'https://i.pravatar.cc/150?img=12' }
-  ]
-
-  // Stats data
-  const stats = [
-    { label: 'Posts', value: userDetails?.posts || 124 },
-    { label: 'Followers', value: userDetails?.followers || 1284 },
-    { label: 'Following', value: userDetails?.following || 567 }
-  ]
 
   // Animation variants for more interactive elements
   const pulseAnimation = {
@@ -122,9 +105,7 @@ const ProfileMenu = ({ userDetails }) => {
             className="w-full h-full object-cover"
           />
         </div>
-        <span className="font-medium text-gray-800 hidden sm:block">
-          {userDetails?.fullName?.split(' ')[0] || "User"}
-        </span>
+       
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3 }}

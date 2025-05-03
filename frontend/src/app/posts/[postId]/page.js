@@ -2,10 +2,11 @@
 import { Loading } from '@/components';
 import PostCard from '@/components/feed/posts/PostCard'
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { BsFillPostcardFill } from 'react-icons/bs';
 
-const page = ({ params }) => {
+const page = props => {
+  const params = use(props.params);
   const [post, setPost] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

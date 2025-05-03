@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, use } from "react";
 import { AiOutlineClose, AiOutlinePlus, AiOutlinePauseCircle, AiOutlinePlayCircle } from "react-icons/ai";
 import { MdOutlineKeyboardArrowLeft, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import Link from "next/link";
@@ -11,7 +11,8 @@ import StoryForm from '@/components/feed/stories/StoryForm';
 import AuthRedirect from '@/components/AuthRedirect';
 import { Loading } from "@/components";
 
-const Page = ({ params }) => {
+const Page = props => {
+  const params = use(props.params);
   const dispatch = useDispatch();
   const { stories } = useSelector((state) => state.story);
   const storyId = params.storyId;

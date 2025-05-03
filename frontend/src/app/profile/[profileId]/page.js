@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, use } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -29,7 +29,8 @@ import Link from 'next/link';
 import { Loading } from '@/components';
 import { FaCheckCircle } from 'react-icons/fa';
 
-const UserProfile = ({ params }) => {
+const UserProfile = props => {
+  const params = use(props.params);
   const [user, setUser] = useState(null);
   const users = useSelector((state) => state.users.users);
   const [loading, setLoading] = useState(true);
@@ -121,8 +122,8 @@ const UserProfile = ({ params }) => {
         return <Followers users={users} user={user} />;
       case 'Following':
         return <Following users={users} user={user} />;
-      case 'Posts':
-        return <Posts userPosts={userPosts} loggedInUserId={loggedInUserId} user={user} usersList={false} />;
+      // case 'Posts':
+      //   return <Posts userPosts={userPosts} loggedInUserId={loggedInUserId} user={user} usersList={false} />;
       default:
         return null;
     }
@@ -229,11 +230,11 @@ const UserProfile = ({ params }) => {
           </motion.div>
 
           <nav className="border-b border-gray-200 mt-2">
-            <ul className="flex flex-wrap justify-center sm:justify-start space-x-0 sm:space-x-4">
+            <ul className="flex flex-wrap justify-center sm:justify-start  sm:space-x-4">
               {menuItems.map((item) => (
                 <li key={item.label} className="relative group">
                   <button
-                    className={`flex items-center px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium rounded-t-lg transition duration-300 ${activeSection === item.label
+                    className={`flex items-center px-2 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium rounded-t-lg transition duration-300 ${activeSection === item.label
                       ? 'bg-[#F6F8FF] text-blue-700 border-b-2 border-blue-500'
                       : 'hover:bg-[#F6F8FF] hover:text-blue-700 hover:border-b-2 hover:border-blue-500'
                       }`}
@@ -247,7 +248,7 @@ const UserProfile = ({ params }) => {
             </ul>
           </nav>
           {/* Render the active section */}
-          <div>{renderSection()}</div>
+          <div className='flex'>{renderSection()}</div>
         </div>
       </div>
 
@@ -259,28 +260,28 @@ const UserProfile = ({ params }) => {
 const menuItems = [
   {
     label: 'Profile',
-    icon: <FiHome className="w-6 h-6 text-blue-500" />,
+    icon: <FiHome className="w-4 h-6 text-blue-500" />,
   },
   {
     label: 'Profile Info',
-    icon: <FiUser className="w-6 h-6 text-green-500" />,
+    icon: <FiUser className="w-4 h-6 text-green-500" />,
   },
   {
     label: 'Friend List',
-    icon: <FiList className="w-6 h-6 text-orange-500" />,
+    icon: <FiList className="w-4 h-6 text-orange-500" />,
   },
   {
     label: 'Followers',
-    icon: <FiAlertCircle className="w-6 h-6 text-yellow-500" />,
+    icon: <FiAlertCircle className="w-4 h-6 text-yellow-500" />,
   },
   {
     label: 'Following',
-    icon: <AiOutlineFileText className="w-6 h-6 text-teal-500" />,
+    icon: <AiOutlineFileText className="w-4 h-6 text-teal-500" />,
   },
-  {
-    label: 'Posts',
-    icon: <FiUserPlus className="w-6 h-6 text-pink-500" />,
-  },
+  // {
+  //   label: 'Posts',
+  //   icon: <FiUserPlus className="w-4 h-6 text-pink-500" />,
+  // },
 ];
 
 export default UserProfile;
