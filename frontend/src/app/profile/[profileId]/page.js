@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useState, use } from 'react';
-import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState, use } from "react";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 import {
   sendFriendRequest,
   cancelSentRequest,
@@ -11,49 +11,71 @@ import {
   fetchSentRequests,
   fetchReceivedRequests,
   fetchFriendsList,
-} from '@/redux/friendRequests/friendRequestsSlice';
-import { getAllPosts } from '@/redux/posts/postsSlice';
-import AuthRedirect from '@/components/AuthRedirect';
-import { FiHome, FiUser, FiList, FiAlertCircle, FiUserPlus } from 'react-icons/fi';
-import { AiOutlineFileText } from 'react-icons/ai';
-import { fetchUsers } from '@/redux/users/usersSlice';
-import { motion } from 'framer-motion';
+} from "@/redux/friendRequests/friendRequestsSlice";
+import { getAllPosts } from "@/redux/posts/postsSlice";
+import AuthRedirect from "@/components/AuthRedirect";
+import {
+  FiHome,
+  FiUser,
+  FiList,
+  FiAlertCircle,
+  FiUserPlus,
+} from "react-icons/fi";
+import { AiOutlineFileText } from "react-icons/ai";
+import { fetchUsers } from "@/redux/users/usersSlice";
+import { motion } from "framer-motion";
 
-import ProfileInfo from '@/components/userProfile/ProfileInfo';
-import FriendList from '@/components/userProfile/FriendList';
-import Followers from '@/components/userProfile/Followers';
-import Following from '@/components/userProfile/Following';
-import Posts from '@/components/userProfile/Posts';
+import ProfileInfo from "@/components/userProfile/ProfileInfo";
+import FriendList from "@/components/userProfile/FriendList";
+import Followers from "@/components/userProfile/Followers";
+import Following from "@/components/userProfile/Following";
+import Posts from "@/components/userProfile/Posts";
 // import StatsSection from '@/components/userProfile/StatsSection';
-import Link from 'next/link';
-import { Loading } from '@/components';
-import { FaCheckCircle } from 'react-icons/fa';
+import Link from "next/link";
+import { Loading } from "@/components";
+import { FaCheckCircle } from "react-icons/fa";
+import Image from "next/image";
+import ImageModal from "@/components/common/Image/ImageModel";
 
-const UserProfile = props => {
+const UserProfile = (props) => {
   const params = use(props.params);
   const [user, setUser] = useState(null);
   const users = useSelector((state) => state.users.users);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeSection, setActiveSection] = useState('Profile');
+  const [activeSection, setActiveSection] = useState("Profile");
   const dispatch = useDispatch();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalImage, setModalImage] = useState(null);
+
   const posts = useSelector((state) => state.posts.posts);
   const userPosts = posts.filter((post) => post.user._id === user?._id);
-  const sentRequests = useSelector((state) => state.friendRequests.sentRequests);
-  const receivedRequests = useSelector((state) => state.friendRequests.receivedRequests);
+  const sentRequests = useSelector(
+    (state) => state.friendRequests.sentRequests
+  );
+  const receivedRequests = useSelector(
+    (state) => state.friendRequests.receivedRequests
+  );
   const friendsList = useSelector((state) => state.friendRequests.friendsList);
   const loggedInUserId = useSelector((state) => state.auth.userDetails?._id);
+
+  const handleImageClick = (imgUrl) => {
+    setModalImage(imgUrl);
+    setModalOpen(true);
+  };
 
   useEffect(() => {
     dispatch(getAllPosts());
     dispatch(fetchUsers());
     const fetchUserDetails = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_API}/api/user/userDetails/${params.profileId}`);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_API}/api/user/userDetails/${params.profileId}`
+        );
         setUser(response.data.data);
         setLoading(false);
       } catch (err) {
-        setError('Failed to fetch user details');
+        setError("Failed to fetch user details");
         setLoading(false);
       }
     };
@@ -73,10 +95,18 @@ const UserProfile = props => {
 
   // Check friendship status and requests
   const isFriend = friendsList.some((friend) => friend._id === user._id);
-  const hasSentRequest = sentRequests.some((req) => req.receiver._id === user._id);
-  const sentRequestId = sentRequests.find((req) => req.receiver._id === user._id)?._id;
-  const hasReceivedRequest = receivedRequests.some((req) => req.sender._id === user._id);
-  const receivedRequestId = receivedRequests.find((req) => req.sender._id === user._id)?._id;
+  const hasSentRequest = sentRequests.some(
+    (req) => req.receiver._id === user._id
+  );
+  const sentRequestId = sentRequests.find(
+    (req) => req.receiver._id === user._id
+  )?._id;
+  const hasReceivedRequest = receivedRequests.some(
+    (req) => req.sender._id === user._id
+  );
+  const receivedRequestId = receivedRequests.find(
+    (req) => req.sender._id === user._id
+  )?._id;
 
   // Handle friend request actions
   const handleSendRequest = () => {
@@ -104,23 +134,28 @@ const UserProfile = props => {
 
   const renderSection = () => {
     switch (activeSection) {
-      case 'Profile':
+      case "Profile":
         return (
           <>
             {/* <StatsSection user={user} />
             <FriendList users={users} user={user} />
             <Followers users={users} user={user} />
             <Following users={users} user={user} /> */}
-            <Posts userPosts={userPosts} loggedInUserId={loggedInUserId} user={user} usersList={users} />
+            <Posts
+              userPosts={userPosts}
+              loggedInUserId={loggedInUserId}
+              user={user}
+              usersList={users}
+            />
           </>
         );
-      case 'Profile Info':
+      case "Profile Info":
         return <ProfileInfo user={user} />;
-      case 'Friend List':
+      case "Friend List":
         return <FriendList users={users} user={user} />;
-      case 'Followers':
+      case "Followers":
         return <Followers users={users} user={user} />;
-      case 'Following':
+      case "Following":
         return <Following users={users} user={user} />;
       // case 'Posts':
       //   return <Posts userPosts={userPosts} loggedInUserId={loggedInUserId} user={user} usersList={false} />;
@@ -144,17 +179,27 @@ const UserProfile = props => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
           >
-            <img
+            <Image
+              height={200}
+              width={200}
               src={user.coverImage || "https://via.placeholder.com/150"}
               alt="Cover"
               className="w-full h-full object-cover"
+              
+              onClick={() => handleImageClick(user.coverImage || "https://via.placeholder.com/150")}
             />
             {loggedInUserId === user._id && (
               <div className="absolute bottom-4 right-4 flex space-x-2">
-                <Link href="/settings" className="px-2 sm:px-4 py-1 sm:py-2 bg-slate-700 text-white rounded-md hover:bg-slate-800 transition duration-300">
+                <Link
+                  href="/settings"
+                  className="px-2 sm:px-4 py-1 sm:py-2 bg-slate-700 text-white rounded-md hover:bg-slate-800 transition duration-300"
+                >
                   Edit Cover Image
                 </Link>
-                <Link href="/settings" className="px-2 sm:px-4 py-1 sm:py-2 bg-slate-700 text-white rounded-md hover:bg-slate-800 transition duration-300">
+                <Link
+                  href="/settings"
+                  className="px-2 sm:px-4 py-1 sm:py-2 bg-slate-700 text-white rounded-md hover:bg-slate-800 transition duration-300"
+                >
                   Edit Profile Picture
                 </Link>
               </div>
@@ -163,23 +208,33 @@ const UserProfile = props => {
 
           <motion.div className="relative px-4 pt-12 pb-6 flex flex-col sm:flex-row items-center sm:items-start sm:pb-12">
             <div className="absolute -top-16 sm:-top-24 left-6">
-              <img
+              <Image
+                height={200}
+                width={200}
                 src={user.profilePicture || "https://via.placeholder.com/150"}
                 alt={user.fullName}
                 className="w-36 h-36 sm:w-52 sm:h-52 rounded-full border-4 border-white shadow-lg hover:scale-105 transition-transform object-cover"
+                onClick={() => handleImageClick(user.profilePicture || "https://via.placeholder.com/150")}
               />
             </div>
             <div className="ml-0 sm:ml-56 mt-4 sm:mt-0 mr-4 sm:mr-7 flex-1">
               <div className="ml-2 text-center sm:text-left">
-                <div className='flex center'>
-                  <div><h1 className="text-2xl sm:text-3xl HelvB capitalize">{user.fullName}</h1></div>
+                <div className="flex center">
+                  <div>
+                    <h1 className="text-2xl sm:text-3xl HelvB capitalize">
+                      {user.fullName}
+                    </h1>
+                  </div>
                   <FaCheckCircle className="text-green-500" title="Verified" />
                 </div>
-               
 
                 <h1 className="text-sm sm:text-lg HelvR">@{user.username}</h1>
-                <p className="text-sm sm:text-base HelvR text-gray-800">{user.bio}</p>
-                <p className="text-sm sm:text-base text-gray-700 HelvR">Joined: {new Date(user.createdAt).toLocaleDateString()}</p>
+                <p className="text-sm sm:text-base HelvR text-gray-800">
+                  {user.bio}
+                </p>
+                <p className="text-sm sm:text-base text-gray-700 HelvR">
+                  Joined: {new Date(user.createdAt).toLocaleDateString()}
+                </p>
               </div>
             </div>
             {loggedInUserId === user._id ? (
@@ -234,10 +289,11 @@ const UserProfile = props => {
               {menuItems.map((item) => (
                 <li key={item.label} className="relative group">
                   <button
-                    className={`flex items-center px-2 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium rounded-t-lg transition duration-300 ${activeSection === item.label
-                      ? 'bg-[#F6F8FF] text-blue-700 border-b-2 border-blue-500'
-                      : 'hover:bg-[#F6F8FF] hover:text-blue-700 hover:border-b-2 hover:border-blue-500'
-                      }`}
+                    className={`flex items-center px-2 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-medium rounded-t-lg transition duration-300 ${
+                      activeSection === item.label
+                        ? "bg-[#F6F8FF] text-blue-700 border-b-2 border-blue-500"
+                        : "hover:bg-[#F6F8FF] hover:text-blue-700 hover:border-b-2 hover:border-blue-500"
+                    }`}
                     onClick={() => handleMenuClick(item.label)}
                   >
                     {item.icon}
@@ -248,10 +304,15 @@ const UserProfile = props => {
             </ul>
           </nav>
           {/* Render the active section */}
-          <div className='flex'>{renderSection()}</div>
+          <div className="flex">{renderSection()}</div>
         </div>
       </div>
-
+      {modalOpen && (
+        <ImageModal
+          imageUrl={modalImage}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
     </AuthRedirect>
   );
 };
@@ -259,23 +320,23 @@ const UserProfile = props => {
 // Menu items data
 const menuItems = [
   {
-    label: 'Profile',
+    label: "Profile",
     icon: <FiHome className="w-4 h-6 text-blue-500" />,
   },
   {
-    label: 'Profile Info',
+    label: "Profile Info",
     icon: <FiUser className="w-4 h-6 text-green-500" />,
   },
   {
-    label: 'Friend List',
+    label: "Friend List",
     icon: <FiList className="w-4 h-6 text-orange-500" />,
   },
   {
-    label: 'Followers',
+    label: "Followers",
     icon: <FiAlertCircle className="w-4 h-6 text-yellow-500" />,
   },
   {
-    label: 'Following',
+    label: "Following",
     icon: <AiOutlineFileText className="w-4 h-6 text-teal-500" />,
   },
   // {

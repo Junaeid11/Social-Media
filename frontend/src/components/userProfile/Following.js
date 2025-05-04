@@ -20,7 +20,7 @@ const Following = ({ users, user }) => {
             <Link
               key={friend._id}
               className="flex flex-col items-center cursor-pointer"
-              href={`profile/${friend._id}`}
+              href={`/profile/${friend._id}`}
             >
               <img
                 src={friend.profilePicture || "https://via.placeholder.com/80"}

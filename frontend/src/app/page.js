@@ -1,9 +1,4 @@
-// TODO:
-// payment
-// Login/Signup registeration
-// navigation
-// image
-// responsive
+
 
 "use client";
 import { useEffect, useState } from "react";
@@ -50,7 +45,7 @@ export default function Home() {
 
   return (
     <AuthRedirect>
-      <main className="bg-[#F5F6FA] mx-auto p-4 space-y-3 w-full min-h-screen">
+      <main className="bg-[#d2d2d2] mx-auto p-4 space-y-3 w-full min-h-screen">
         <ProfilePicVerify />
         <StorySection />
         <PostForm />
