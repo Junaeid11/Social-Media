@@ -164,7 +164,7 @@ export const  updateUser = asyncHandler(async (req, res, next) => {
   if (!user) {
     return res.status(404).json({ message: 'User not found' });
   }
-  console.log(user)
+
 
   // Process uploaded files from Cloudinary
   if (req.files?.profilePicture?.length) {
@@ -186,7 +186,7 @@ export const  updateUser = asyncHandler(async (req, res, next) => {
 
   try {
     await user.save();
-    res.json({ data: user });
+    res.json({  user });
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
       const errors = {};

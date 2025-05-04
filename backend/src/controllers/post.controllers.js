@@ -16,11 +16,14 @@ export const createPost = asyncHandler(async (req, res, next) => {
     // Create post object with basic fields
     const postData = { 
       content, 
-      image,
       feeling,
       backgroundColor: backgroundColor || 'bg-white',
       user: userId, 
     };
+    if (req.files?.image?.length) {
+      postData.image = req.files.image[0].path;
+    }
+    
 
     // Add poll data if provided
     if (pollData && pollData.options && pollData.options.length >= 2) {
@@ -52,6 +55,7 @@ export const createPost = asyncHandler(async (req, res, next) => {
 
     res.status(201).json(new ApiResponse(201, 'Post created successfully', populatedPost));
   } catch (error) {
+    console.error("Post creation error:", error);  
     next(new ApiError(500, 'Failed to create post'));
   }
 });

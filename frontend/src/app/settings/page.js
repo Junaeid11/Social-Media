@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -19,22 +19,40 @@ import {
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiChevronRight, FiLogOut, FiSave, FiX } from "react-icons/fi";
-import AuthRedirect from '@/components/AuthRedirect';
+import AuthRedirect from "@/components/AuthRedirect";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserDetails, updateUserDetails } from "@/redux/auth/authSlice";
 import Link from "next/link";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { fetchFriendsList, fetchReceivedRequests, fetchSentRequests } from "@/redux/friendRequests/friendRequestsSlice";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  fetchFriendsList,
+  fetchReceivedRequests,
+  fetchSentRequests,
+} from "@/redux/friendRequests/friendRequestsSlice";
 import { fetchUsers } from "@/redux/users/usersSlice";
+import ImagePreviewer from "@/components/ui/NMImageUploader/ImagePreviewer";
+import NMImageUploader from "@/components/ui/NMImageUploader";
 
 const SettingsPage = () => {
   const [activeField, setActiveField] = useState(null);
   const dispatch = useDispatch();
-  const { isLoggedIn, userDetails, loading, error } = useSelector((state) => state.auth);
-  const sentRequests = useSelector((state) => state.friendRequests.sentRequests);
-  const receivedRequests = useSelector((state) => state.friendRequests.receivedRequests);
+  const { isLoggedIn, userDetails, loading, error } = useSelector(
+    (state) => state.auth
+  );
+  const sentRequests = useSelector(
+    (state) => state.friendRequests.sentRequests
+  );
+  const receivedRequests = useSelector(
+    (state) => state.friendRequests.receivedRequests
+  );
   const friendsList = useSelector((state) => state.friendRequests.friendsList);
+  const [imageFiles, setImageFiles] = useState({
+    profilePicture: null,
+    coverImage: null,
+  });
+
+  const [imagePreview, setImagePreview] = useState([]);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -82,33 +100,107 @@ const SettingsPage = () => {
     setFormData({ ...formData, [activeField]: e.target.value });
   };
 
+
   const [errors, setErrors] = useState({});
 
   const handleSave = async () => {
     try {
       const authToken = localStorage.getItem("authToken");
-      const response = await axios.put(
+  
+      const dataToSend = new FormData();
+  
+      const updatedData = {};
+      if (formData[activeField]) {
+        updatedData[activeField] = formData[activeField];
+      }
+  
+      dataToSend.append("data", JSON.stringify(updatedData)); // 👈 Send as string for backend
+  
+      if (imageFiles.profilePicture) {
+        dataToSend.append("profilePicture", imageFiles.profilePicture);
+      }
+  
+      if (imageFiles.coverImage) {
+        dataToSend.append("coverImage", imageFiles.coverImage);
+      }
+  
+      await axios.put(
         `${process.env.NEXT_PUBLIC_BACKEND_API}/api/user/update`,
-        { [activeField]: formData[activeField] },
+        dataToSend,
         {
           headers: {
             "auth-token": authToken,
+            "Content-Type": "multipart/form-data",
           },
         }
       );
-      dispatch(updateUserDetails(response.data.data));
+  
+      dispatch(fetchUserDetails());
       setActiveField(null);
-      setErrors({}); // Clear errors after successful update
-      toast.success(`${activeField.charAt(0).toUpperCase() + activeField.slice(1)} updated successfully!`);
+      setErrors({});
+      toast.success(
+        `${activeField.charAt(0).toUpperCase() + activeField.slice(1)} updated successfully!`
+      );
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.errors) {
-        // Capture the validation errors
+      if (error.response?.data?.errors) {
         setErrors(error.response.data.errors);
       } else {
         console.error("Error updating user details:", error);
         toast.error("Failed to update. Please try again.");
       }
     }
+  };
+  
+  const renderImageForm = (field) => {
+    if (activeField !== field) return null;
+
+    return (
+      <div className="flex gap-4 mt-4">
+        {field === "profilePicture" || field === "coverImage" ? (
+          <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            setImageFiles({
+              ...imageFiles,
+           [field]: e.target.files[0], /// Only take the first file
+            });
+          }}
+        />
+        
+        ) : (
+          <input
+            type={field === "password" ? "password" : "text"}
+            placeholder={`Enter new ${field} ${
+              field === "dob" ? "DD/MM/YYYY" : ""
+            }`}
+            className={`w-full p-3 mb-2 border ${
+              errors[field] ? "border-red-500" : "border-gray-300"
+            } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
+            value={formData[field]}
+            onChange={handleInputChange}
+          />
+        )}
+
+        <motion.button
+          onClick={handleSave}
+          className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <FiSave className="inline mr-1" /> Save Changes
+        </motion.button>
+
+        <motion.button
+          onClick={handleCancel}
+          className="bg-gray-400 text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <FiX className="inline mr-1" /> Cancel
+        </motion.button>
+      </div>
+    );
   };
 
   const renderEditForm = (field) => {
@@ -123,12 +215,18 @@ const SettingsPage = () => {
       >
         <input
           type={field === "password" ? "password" : "text"}
-          placeholder={`Enter new ${field} ${field === 'dob' ? 'DD/MM/YYYY' : ''}`}
-          className={`w-full p-3 mb-2 border ${errors[field] ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
+          placeholder={`Enter new ${field} ${
+            field === "dob" ? "DD/MM/YYYY" : ""
+          }`}
+          className={`w-full p-3 mb-2 border ${
+            errors[field] ? "border-red-500" : "border-gray-300"
+          } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
           value={formData[field]}
           onChange={handleInputChange}
         />
-        {errors[field] && <p className="text-red-500 text-sm">{errors[field].message}</p>}
+        {errors[field] && (
+          <p className="text-red-500 text-sm">{errors[field].message}</p>
+        )}
         <div className="flex gap-4 mt-4">
           <motion.button
             onClick={handleSave}
@@ -153,51 +251,80 @@ const SettingsPage = () => {
 
   const SettingItem = ({ title, icon, field, value }) => (
     <motion.li
-      className={`flex justify-between items-center ${(field === "profilePicture" || field === "coverImage") ? 'py-4 pr-4' : "p-4"} bg-white rounded-lg hover:bg-gray-50 transition duration-200 shadow-sm`}
+      className={`flex justify-between items-center ${
+        field === "profilePicture" || field === "coverImage"
+          ? "py-4 pr-4"
+          : "p-4"
+      } bg-white rounded-lg hover:bg-gray-50 transition duration-200 shadow-sm`}
       whileHover={{ scale: 1.02, boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}
-      onClick={() => handleEdit(field)}
     >
-      {field !== "profilePicture" ? field === "coverImage" ? (
-        <div className="flex items-center">
-          <div className="relative mx-auto w-16 h-14">
-            <motion.div
-              className="relative w-full h-full rounded-md overflow-hidden shadow-lg"
-              whileHover={{ scale: 1.05, rotate: 5 }}
-            >
-              <img
-                src={userDetails?.coverImage || "https://via.placeholder.com/100"}
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
-            </motion.div>
-            <motion.div
-              className="absolute -bottom-1 -right-1 bg-indigo-600 text-white p-1.5 rounded-full shadow-lg cursor-pointer"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => handleEdit("coverImage")}
-            >
-              <FaCamera size={14} />
-            </motion.div>
+      {field !== "profilePicture" ? (
+        field === "coverImage" ? (
+          <div className="flex items-center">
+            <div className="relative mx-auto w-16 h-14">
+              <motion.div
+                className="relative w-full h-full rounded-md overflow-hidden shadow-lg"
+                whileHover={{ scale: 1.05, rotate: 5 }}
+              >
+                <img
+                  src={
+                    userDetails?.coverImage || "https://via.placeholder.com/100"
+                  }
+                  alt="Cover"
+                  className="w-full h-full object-cover"
+                />
+              </motion.div>
+
+              {/* Camera icon triggers edit */}
+              <motion.div
+                className="absolute -bottom-1 -right-1 bg-indigo-600 text-white p-1.5 rounded-full shadow-lg cursor-pointer"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => handleEdit("coverImage")} // 👈 Only here
+              >
+                <FaCamera size={14} />
+              </motion.div>
+              {activeField === "coverImage" && (
+                <>
+                  {imagePreview.length > 0 ? (
+                    <ImagePreviewer
+                      setImageFiles={setImageFiles}
+                      imagePreview={imagePreview}
+                      setImagePreview={setImagePreview}
+                      className="mt-2"
+                    />
+                  ) : (
+                    <NMImageUploader
+                      setImageFiles={setImageFiles}
+                      setImagePreview={setImagePreview}
+                      label="Upload Cover Image"
+                      className="mt-2"
+                    />
+                  )}
+                </>
+              )}
+            </div>
+
+            <div className="flex flex-col ml-3">
+              <span className="flex items-center gap-3 text-gray-700 font-medium">
+                {title}
+              </span>
+              <span className="text-sm text-gray-500 mt-1">
+                {field === "password" ? "••••••••" : value || "Not set"}
+              </span>
+            </div>
           </div>
-          <div className="flex flex-col ml-3">
+        ) : (
+          <div className="flex flex-col">
             <span className="flex items-center gap-3 text-gray-700 font-medium">
+              {icon}
               {title}
             </span>
-            <span className="text-sm text-gray-500 mt-1">
+            <span className="text-sm text-gray-500 mt-1 ml-7">
               {field === "password" ? "••••••••" : value || "Not set"}
             </span>
           </div>
-        </div>
-      ) : (
-        <div className="flex flex-col">
-          <span className="flex items-center gap-3 text-gray-700 font-medium">
-            {icon}
-            {title}
-          </span>
-          <span className="text-sm text-gray-500 mt-1 ml-7">
-            {field === "password" ? "••••••••" : value || "Not set"}
-          </span>
-        </div>
+        )
       ) : (
         <div className="flex items-center">
           <div className="relative mx-auto w-16 h-16">
@@ -209,7 +336,7 @@ const SettingsPage = () => {
               transition={{
                 repeat: Infinity,
                 duration: 3,
-                ease: "easeInOut"
+                ease: "easeInOut",
               }}
             />
             <motion.div
@@ -217,20 +344,28 @@ const SettingsPage = () => {
               whileHover={{ scale: 1.05, rotate: 5 }}
             >
               <img
-                src={userDetails?.profilePicture || "https://via.placeholder.com/100"}
+                src={
+                  userDetails?.profilePicture ||
+                  "https://via.placeholder.com/100"
+                }
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
             </motion.div>
+
+            {/* Camera icon triggers profile pic edit */}
             <motion.div
               className="absolute -bottom-1 -right-1 bg-indigo-600 text-white p-1.5 rounded-full shadow-lg cursor-pointer"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              onClick={() => handleEdit("profilePicture")}
+              onClick={() => handleEdit("profilePicture")} // 👈 Only here
             >
               <FaCamera size={14} />
             </motion.div>
+
+          
           </div>
+
           <div className="flex flex-col ml-3">
             <span className="flex items-center gap-3 text-gray-700 font-medium">
               {title}
@@ -241,9 +376,11 @@ const SettingsPage = () => {
           </div>
         </div>
       )}
+
       <motion.button
         className="text-blue-600 bg-blue-50 p-2 rounded-full"
         whileHover={{ rotate: 15 }}
+        onClick={() => handleEdit(field)} // Optional: if you want edit button as well
       >
         <FaPen size={14} />
       </motion.button>
@@ -289,8 +426,8 @@ const SettingsPage = () => {
           </ul>
           <AnimatePresence>
             {renderEditForm("fullName")}
-            {renderEditForm("profilePicture")}
-            {renderEditForm("coverImage")}
+            {renderImageForm("profilePicture")}
+            {renderImageForm("coverImage")}
           </AnimatePresence>
         </motion.div>
 
@@ -389,13 +526,31 @@ const SettingsPage = () => {
           </h2>
           <ul className="space-y-4">
             {[
-              { title: "Friends", icon: <FaUserPlus className="text-indigo-500" />, href: "/friends", count: friendsList.length },
-              { title: "Followers", icon: <FaUserMinus className="text-indigo-500" />, href: "/pending-requests", count: receivedRequests.length },
-              { title: "Following", icon: <FaUserFriends className="text-indigo-500" />, href: "/sent-requests", count: sentRequests.length },
+              {
+                title: "Friends",
+                icon: <FaUserPlus className="text-indigo-500" />,
+                href: "/friends",
+                count: friendsList.length,
+              },
+              {
+                title: "Followers",
+                icon: <FaUserMinus className="text-indigo-500" />,
+                href: "/pending-requests",
+                count: receivedRequests.length,
+              },
+              {
+                title: "Following",
+                icon: <FaUserFriends className="text-indigo-500" />,
+                href: "/sent-requests",
+                count: sentRequests.length,
+              },
             ].map((item, index) => (
               <motion.div
                 key={index}
-                whileHover={{ scale: 1.02, boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}
+                whileHover={{
+                  scale: 1.02,
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                }}
               >
                 <Link
                   href={item.href}

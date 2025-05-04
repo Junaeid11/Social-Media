@@ -12,11 +12,16 @@ import {
   getPollResults,
   getPostById
 } from '../controllers/post.controllers.js';
+import { parseBody } from '../middleware/bodyParser.js';
+import { multerUpload } from '../config/multer.config.js';
 
 const router = express.Router();
 
 // Route to create a new post
-router.post('/', fetchUser, createPost);
+router.post('/', multerUpload.fields([
+  { name: 'image', maxCount: 4 },
+
+]),parseBody, fetchUser, createPost);
 
 // Route to get all posts of all users
 router.get('/', getAllPosts);
