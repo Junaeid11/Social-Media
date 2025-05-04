@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { FiHome, FiTrendingUp, FiActivity, FiCompass } from "react-icons/fi";
 import { RiHomeLine, RiCompassDiscoverLine, RiFireLine, RiBookmarkLine, RiSettings4Line } from "react-icons/ri";
+import Image from "next/image";
 
 const Rightbar = () => {
   const { isLoggedIn } = useSelector((state) => state.auth);
@@ -220,7 +221,9 @@ const Rightbar = () => {
                           className="flex items-center p-2 transition cursor-pointer group"
                         >
                           <div className="relative">
-                            <img
+                              <Image
+                                        width={200}
+                                        height={200} 
                               src={user?.profilePicture || "/default-profile.jpg"}
                               alt={user?.fullName}
                               className="rounded-full h-10 w-10 mr-2 object-cover border-2 border-white group-hover:border-indigo-200 transition-all"
@@ -331,7 +334,9 @@ const Rightbar = () => {
                       whileHover={{ scale: 1.15 }}
                       whileTap={{ scale: 0.95 }}
                     >
-                      <img
+                        <Image
+                                  width={200}
+                                  height={200} 
                         src={user?.profilePicture || "/default-profile.jpg"}
                         alt={user?.fullName}
                         className="rounded-full h-10 w-10 object-cover border-2 border-purple-200"

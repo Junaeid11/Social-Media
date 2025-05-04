@@ -12,6 +12,7 @@ import {
 } from '@/redux/notifications/notificationsSlice';
 import { useRouter } from 'next/navigation';
 import { timeAgo } from "@/utility/timeAgo";
+import Image from 'next/image';
 
 const Notification = () => {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -352,7 +353,9 @@ const Notification = () => {
                             className={`w-12 h-12 rounded-full ${!notification.isRead ? 'bg-gradient-to-r from-indigo-500 to-purple-500 p-0.5' : 'border-2 border-gray-200'}`}
                           >
                             <div className="h-full w-full bg-white rounded-full overflow-hidden">
-                              <img 
+                                <Image
+                                          width={200}
+                                          height={200} 
                                 src={notification.senderUser.profilePicture} 
                                 className='h-full w-full object-cover rounded-full' 
                                 alt={notification.senderUser.name || "User"} 

@@ -13,12 +13,17 @@ import { deletePost } from "@/redux/posts/postsSlice";
 import { useRouter } from "next/navigation";
 import { PollSection, PostHeader, EditPostModal } from "./post_card";
 import { patternStyles } from "@/constants";
+import Image from "next/image";
+import ImageModal from "@/components/common/Image/ImageModel";
+import { Pointer } from "lucide-react";
 
 const PostCard = ({ post }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showFullContent, setShowFullContent] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalImage, setModalImage] = useState(null);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -51,7 +56,10 @@ const PostCard = ({ post }) => {
   const handleToggleComments = () => {
     setShowComments(!showComments);
   };
-
+  const handleImageClick = (imgUrl) => {
+    setModalImage(imgUrl);
+    setModalOpen(true);
+  };
   // Format content with hashtags
   const formatContentWithHashtags = (content) => {
     if (!content) return "";
@@ -190,14 +198,21 @@ const PostCard = ({ post }) => {
                   src={img}
                   alt={`Post Image ${index + 1}`}
                   className="w-full rounded-lg object-cover max-h-[24rem] transform transition-transform duration-500 group-hover:scale-105"
+                 
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="absolute bottom-3 right-3 bg-black/60 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <FiImage className="w-4 h-4" />
+                <div className="absolute z-50 bottom-3 right-3 bg-black/60 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer">
+                  <FiImage className="w-4 h-4"   onClick={() => handleImageClick(img)}/>
                 </div>
               </motion.div>
             ))}
           </div>
+        )}
+        {modalOpen && typeof window !== "undefined" && (
+          <ImageModal
+            imageUrl={modalImage}
+            onClose={() => setModalOpen(false)}
+          />
         )}
 
         {/* Poll display */}

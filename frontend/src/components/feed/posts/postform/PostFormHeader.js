@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 import { RiDraftLine } from 'react-icons/ri';
 
@@ -6,7 +7,9 @@ const PostFormHeader = ({ userDetails, isDraftSaved = false }) => {
     <div className="flex justify-between items-center mb-4">
       <div className="flex items-center space-x-3">
         <div className="relative">
-          <img
+            <Image
+                      width={200}
+                      height={200} 
             className="w-12 h-12 object-cover rounded-full shadow-md ring-2 ring-indigo-100 border border-white"
             src={userDetails?.profilePicture || '/default-avatar.png'}
             alt={userDetails?.fullName}

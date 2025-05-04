@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AuthRedirect from '@/components/AuthRedirect';
 import Link from 'next/link';
 import { IoExpandSharp } from 'react-icons/io5';
+import Image from 'next/image';
 
 const SentRequests = () => {
   const dispatch = useDispatch();
@@ -112,7 +113,9 @@ const SentRequests = () => {
         <div className="relative">
           {/* Cover image with gradient overlay */}
           <div className="h-28 bg-gradient-to-r from-blue-400 to-indigo-500 relative">
-            <img 
+             <Image
+                       width={200}
+                       height={200} 
               src={request.receiver.coverImage || 'https://via.placeholder.com/500x200?text=Cover+Image'} 
               className='h-full w-full object-cover transition-transform duration-700 group-hover:scale-105' 
               alt={request.receiver.fullName} 
@@ -141,7 +144,9 @@ const SentRequests = () => {
                 whileHover={{ scale: 1.08, y: -5 }}
                 className="w-20 h-20 rounded-full border-4 border-white overflow-hidden shadow-lg group-hover:border-blue-100 transition-all duration-300"
               >
-                <img
+            <Image
+                      width={200}
+                      height={200} 
                   src={request.receiver.profilePicture}
                   alt={request.receiver.fullName}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -219,7 +224,9 @@ const SentRequests = () => {
                 transition={{ type: "spring", stiffness: 300 }}
                 className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-blue-200 transition-all duration-300 group-hover:border-blue-400 shadow-md"
               >
-                <img
+               <Image
+                         width={200}
+                         height={200} 
                   src={request.receiver.profilePicture}
                   alt={request.receiver.fullName}
                   className="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-110"
@@ -521,7 +528,9 @@ const SentRequests = () => {
                     whileHover={{ y: -5 }}
                     transition={{ type: "spring", stiffness: 300 }}
                   >
-                    <img
+                 <Image
+                           width={200}
+                           height={200} 
                       src={selectedUser.receiver.profilePicture}
                       alt={selectedUser.receiver.fullName}
                       className="w-28 h-28 rounded-full border-4 border-white shadow-lg object-cover"

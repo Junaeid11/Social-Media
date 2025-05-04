@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 
@@ -11,7 +12,9 @@ const PostFormImagePreview = ({ previewImage, image, setPreviewImage, setImage }
 
         return (
           <div key={index} className="relative rounded-lg overflow-hidden border border-gray-200">
-            <img
+              <Image
+                        width={200}
+                        height={200} 
               src={imageUrl}
               alt={`Preview ${index + 1}`}
               className="w-32 h-32 object-cover"

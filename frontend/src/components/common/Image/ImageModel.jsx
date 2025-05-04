@@ -1,27 +1,53 @@
-import React from 'react';
+// components/common/Image/ImageModal.js
+"use client";
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+const backdrop = {
+  visible: { opacity: 1 },
+  hidden: { opacity: 0 },
+};
+
+const modal = {
+  hidden: { scale: 0.95, opacity: 0 },
+  visible: { scale: 1, opacity: 1 },
+};
 
 const ImageModal = ({ imageUrl, onClose }) => {
   if (!imageUrl) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 bg-black bg-opacity-70 flex items-center justify-center"
-      onClick={onClose}
-    >
-      <div className="relative" onClick={(e) => e.stopPropagation()}>
-        <button
-          onClick={onClose}
-          className="absolute top-2 right-2 text-white text-2xl font-bold z-10"
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center"
+        variants={backdrop}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+        onClick={onClose}
+      >
+        <motion.div
+          variants={modal}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          className="relative"
+          onClick={(e) => e.stopPropagation()}
         >
-          &times;
-        </button>
-        <img
-          src={imageUrl}
-          alt="Preview"
-          className="max-w-full max-h-[90vh] rounded-lg shadow-2xl"
-        />
-      </div>
-    </div>
+          <img
+            src={imageUrl}
+            alt="Modal Preview"
+            className="max-w-[90vw] max-h-[90vh] rounded-lg"
+          />
+          <button
+            onClick={onClose}
+            className="absolute top-2 right-2 text-white bg-black/50 p-2 rounded-full hover:bg-black"
+          >
+            ✕
+          </button>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

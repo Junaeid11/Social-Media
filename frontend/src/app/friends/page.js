@@ -1,38 +1,39 @@
 "use client";
-import React, { useEffect, useState, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   fetchFriendsList,
   unfriend,
-} from '@/redux/friendRequests/friendRequestsSlice';
-import AuthRedirect from '@/components/AuthRedirect';
-import { 
-  FiUserMinus, 
-  FiEye, 
-  FiSearch, 
-  FiFilter, 
-  FiRefreshCw, 
-  FiX, 
-  FiUsers, 
+} from "@/redux/friendRequests/friendRequestsSlice";
+import AuthRedirect from "@/components/AuthRedirect";
+import {
+  FiUserMinus,
+  FiEye,
+  FiSearch,
+  FiFilter,
+  FiRefreshCw,
+  FiX,
+  FiUsers,
   FiUserCheck,
   FiCheck,
-  FiMessageCircle
-} from 'react-icons/fi';
-import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
-import { IoExpandSharp } from 'react-icons/io5';
+  FiMessageCircle,
+} from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { IoExpandSharp } from "react-icons/io5";
+import Image from "next/image";
 
 const FriendsList = () => {
   const dispatch = useDispatch();
   const friends = useSelector((state) => state.friendRequests.friendsList);
-  
+
   // UI States
-  const [searchTerm, setSearchTerm] = useState('');
-  const [viewMode, setViewMode] = useState('grid');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState("grid");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [sortBy, setSortBy] = useState('name');
+  const [sortBy, setSortBy] = useState("name");
   const searchInputRef = useRef(null);
 
   useEffect(() => {
@@ -52,17 +53,23 @@ const FriendsList = () => {
   };
 
   // Filter friends by search term
-  const filteredFriends = friends.filter(friend => {
-    return friend.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      friend.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (friend.bio && friend.bio.toLowerCase().includes(searchTerm.toLowerCase()));
-  }).sort((a, b) => {
-    // Sort according to selected sort criteria
-    if (sortBy === 'name') return a.fullName.localeCompare(b.fullName);
-    if (sortBy === 'username') return a.username.localeCompare(b.username);
-    if (sortBy === 'recent') return new Date(b.createdAt) - new Date(a.createdAt);
-    return 0;
-  });
+  const filteredFriends = friends
+    .filter((friend) => {
+      return (
+        friend.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        friend.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (friend.bio &&
+          friend.bio.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    })
+    .sort((a, b) => {
+      // Sort according to selected sort criteria
+      if (sortBy === "name") return a.fullName.localeCompare(b.fullName);
+      if (sortBy === "username") return a.username.localeCompare(b.username);
+      if (sortBy === "recent")
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      return 0;
+    });
 
   // Card component for grid view
   const FriendCard = ({ friend }) => {
@@ -72,16 +79,25 @@ const FriendsList = () => {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        whileHover={{ y: -8, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
+        whileHover={{
+          y: -8,
+          boxShadow:
+            "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+        }}
         className="bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl border border-gray-100 relative group"
       >
         <div className="relative">
           {/* Cover image with gradient overlay */}
           <div className="h-28 bg-gradient-to-r from-blue-400 to-indigo-500 relative">
-            <img 
-              src={friend.coverImage || 'https://via.placeholder.com/500x200?text=Cover+Image'} 
-              className='h-full w-full object-cover transition-transform duration-700 group-hover:scale-105' 
-              alt={friend.fullName} 
+            <Image
+              width={200}
+              height={200}
+              src={
+                friend.coverImage ||
+                "https://via.placeholder.com/500x200?text=Cover+Image"
+              }
+              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              alt={friend.fullName}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-50"></div>
           </div>
@@ -107,7 +123,9 @@ const FriendsList = () => {
                 whileHover={{ scale: 1.08, y: -5 }}
                 className="w-20 h-20 rounded-full border-4 border-white overflow-hidden shadow-lg group-hover:border-blue-100 transition-all duration-300"
               >
-                <img
+                <Image
+                  width={200}
+                  height={200}
                   src={friend.profilePicture}
                   alt={friend.fullName}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -120,11 +138,17 @@ const FriendsList = () => {
         <div className="pt-14 pb-5 px-5">
           <div className="text-center mb-4">
             <Link href={`profile/${friend._id}`} className="group">
-              <h3 className="font-bold text-gray-800 text-lg capitalize group-hover:text-blue-600 transition-colors duration-300">{friend.fullName}</h3>
+              <h3 className="font-bold text-gray-800 text-lg capitalize group-hover:text-blue-600 transition-colors duration-300">
+                {friend.fullName}
+              </h3>
             </Link>
-            <p className="text-sm text-blue-500 font-medium">@{friend.username}</p>
+            <p className="text-sm text-blue-500 font-medium">
+              @{friend.username}
+            </p>
             <div className="mt-2 h-10">
-              <p className="text-sm text-gray-600 line-clamp-2 italic bg-gray-50 p-1.5 rounded-lg">{friend.bio || "No bio available"}</p>
+              <p className="text-sm text-gray-600 line-clamp-2 italic bg-gray-50 p-1.5 rounded-lg">
+                {friend.bio || "No bio available"}
+              </p>
             </div>
           </div>
 
@@ -134,11 +158,13 @@ const FriendsList = () => {
                 href={`profile/${friend._id}`}
                 className="flex-1 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all duration-300 flex items-center justify-center group"
               >
-                <FiEye className="mr-2 group-hover:scale-110 transition-transform duration-300" /> 
-                <span className="group-hover:translate-x-0.5 transition-transform duration-300">View Profile</span>
+                <FiEye className="mr-2 group-hover:scale-110 transition-transform duration-300" />
+                <span className="group-hover:translate-x-0.5 transition-transform duration-300">
+                  View Profile
+                </span>
               </Link>
             </div>
-            
+
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
@@ -149,10 +175,10 @@ const FriendsList = () => {
             </motion.button>
           </div>
         </div>
-        
+
         {/* Status indicator */}
         <div className="absolute top-0 left-0 m-3">
-          <motion.div 
+          <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             className="p-1.5 rounded-full bg-green-500 shadow-md"
@@ -183,7 +209,9 @@ const FriendsList = () => {
                 transition={{ type: "spring", stiffness: 300 }}
                 className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-blue-200 transition-all duration-300 group-hover:border-blue-400 shadow-md"
               >
-                <img
+                <Image
+                  width={200}
+                  height={200}
                   src={friend.profilePicture}
                   alt={friend.fullName}
                   className="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-110"
@@ -200,7 +228,9 @@ const FriendsList = () => {
               </h3>
             </Link>
             <div className="flex items-center space-x-2">
-              <p className="text-sm text-blue-500 font-medium">@{friend.username}</p>
+              <p className="text-sm text-blue-500 font-medium">
+                @{friend.username}
+              </p>
               {friend.isDpVerify && (
                 <motion.div
                   whileHover={{ scale: 1.2, rotate: 360 }}
@@ -211,7 +241,9 @@ const FriendsList = () => {
                 </motion.div>
               )}
             </div>
-            <p className="text-xs text-gray-500 mt-1 line-clamp-1">{friend.bio || "No bio available"}</p>
+            <p className="text-xs text-gray-500 mt-1 line-clamp-1">
+              {friend.bio || "No bio available"}
+            </p>
           </div>
         </div>
 
@@ -282,7 +314,7 @@ const FriendsList = () => {
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   {searchTerm && (
                     <button
-                      onClick={() => setSearchTerm('')}
+                      onClick={() => setSearchTerm("")}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
                       <FiX size={16} />
@@ -303,17 +335,33 @@ const FriendsList = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={refreshData}
-                  className={`p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors ${isRefreshing ? 'animate-spin' : ''}`}
+                  className={`p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors ${
+                    isRefreshing ? "animate-spin" : ""
+                  }`}
                 >
                   <FiRefreshCw size={20} />
                 </motion.button>
 
                 <div className="flex border border-gray-300 rounded-lg overflow-hidden">
                   <button
-                    onClick={() => setViewMode('grid')}
-                    className={`p-2 ${viewMode === 'grid' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+                    onClick={() => setViewMode("grid")}
+                    className={`p-2 ${
+                      viewMode === "grid"
+                        ? "bg-blue-500 text-white"
+                        : "bg-white text-gray-700 hover:bg-gray-100"
+                    }`}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <rect x="3" y="3" width="7" height="7"></rect>
                       <rect x="14" y="3" width="7" height="7"></rect>
                       <rect x="14" y="14" width="7" height="7"></rect>
@@ -321,10 +369,24 @@ const FriendsList = () => {
                     </svg>
                   </button>
                   <button
-                    onClick={() => setViewMode('list')}
-                    className={`p-2 ${viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+                    onClick={() => setViewMode("list")}
+                    className={`p-2 ${
+                      viewMode === "list"
+                        ? "bg-blue-500 text-white"
+                        : "bg-white text-gray-700 hover:bg-gray-100"
+                    }`}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <line x1="8" y1="6" x2="21" y2="6"></line>
                       <line x1="8" y1="12" x2="21" y2="12"></line>
                       <line x1="8" y1="18" x2="21" y2="18"></line>
@@ -348,20 +410,23 @@ const FriendsList = () => {
                 >
                   <div className="flex flex-wrap gap-4">
                     <div>
-                      <h3 className="font-medium text-gray-700 mb-2">Sort By</h3>
+                      <h3 className="font-medium text-gray-700 mb-2">
+                        Sort By
+                      </h3>
                       <div className="flex flex-wrap gap-2">
                         {[
-                          { id: 'name', label: 'Name' },
-                          { id: 'username', label: 'Username' },
-                          { id: 'recent', label: 'Recently Added' },
+                          { id: "name", label: "Name" },
+                          { id: "username", label: "Username" },
+                          { id: "recent", label: "Recently Added" },
                         ].map((sort) => (
                           <button
                             key={sort.id}
                             onClick={() => setSortBy(sort.id)}
-                            className={`px-3 py-1.5 rounded-full text-sm ${sortBy === sort.id
-                                ? 'bg-blue-500 text-white'
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                              }`}
+                            className={`px-3 py-1.5 rounded-full text-sm ${
+                              sortBy === sort.id
+                                ? "bg-blue-500 text-white"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                            }`}
                           >
                             {sort.label}
                           </button>
@@ -377,7 +442,8 @@ const FriendsList = () => {
             <div className="mt-4">
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                 <FiUserCheck className="mr-1.5" />
-                {filteredFriends.length} {filteredFriends.length === 1 ? 'Friend' : 'Friends'}
+                {filteredFriends.length}{" "}
+                {filteredFriends.length === 1 ? "Friend" : "Friends"}
               </span>
             </div>
           </div>
@@ -394,18 +460,30 @@ const FriendsList = () => {
               <div className="flex justify-center mb-4">
                 <FiUsers size={48} className="text-blue-400" />
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">No Friends Yet</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">
+                No Friends Yet
+              </h3>
               <p className="text-gray-600 mb-6">
-                You haven't connected with anyone yet. Start adding friends to grow your network!
+                You haven't connected with anyone yet. Start adding friends to
+                grow your network!
               </p>
-              <Link href="/people" className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors flex items-center mx-auto w-max">
+              <Link
+                href="/people"
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors flex items-center mx-auto w-max"
+              >
                 <FiUsers className="mr-2" /> Find People
               </Link>
             </motion.div>
           ) : (
-            <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
+            <div
+              className={
+                viewMode === "grid"
+                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                  : "space-y-4"
+              }
+            >
               <AnimatePresence>
-                {filteredFriends.map(friend => (
+                {filteredFriends.map((friend) => (
                   <motion.div
                     key={friend._id}
                     layout
@@ -414,7 +492,7 @@ const FriendsList = () => {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.2 }}
                   >
-                    {viewMode === 'grid' ? (
+                    {viewMode === "grid" ? (
                       <FriendCard friend={friend} />
                     ) : (
                       <FriendListItem friend={friend} />
@@ -445,9 +523,12 @@ const FriendsList = () => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="relative h-40 overflow-hidden">
-                  <motion.img 
-                    src={selectedUser.coverImage || 'https://via.placeholder.com/500x200?text=Cover+Image'} 
-                    className='h-full w-full object-cover' 
+                  <motion.img
+                    src={
+                      selectedUser.coverImage ||
+                      "https://via.placeholder.com/500x200?text=Cover+Image"
+                    }
+                    className="h-full w-full object-cover"
                     alt={selectedUser.fullName}
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.3 }}
@@ -462,12 +543,14 @@ const FriendsList = () => {
                 </div>
 
                 <div className="px-6 pt-14 pb-6 -mt-12 relative z-10">
-                  <motion.div 
+                  <motion.div
                     className="flex justify-center -mt-16 mb-4"
                     whileHover={{ y: -5 }}
                     transition={{ type: "spring", stiffness: 300 }}
                   >
-                    <img
+                    <Image
+                      width={200}
+                      height={200}
                       src={selectedUser.profilePicture}
                       alt={selectedUser.fullName}
                       className="w-28 h-28 rounded-full border-4 border-white shadow-lg object-cover"
@@ -482,10 +565,16 @@ const FriendsList = () => {
                   </motion.div>
 
                   <div className="text-center mb-6">
-                    <h3 className="text-2xl font-bold text-gray-800">{selectedUser.fullName}</h3>
-                    <p className="text-blue-500 font-medium">@{selectedUser.username}</p>
+                    <h3 className="text-2xl font-bold text-gray-800">
+                      {selectedUser.fullName}
+                    </h3>
+                    <p className="text-blue-500 font-medium">
+                      @{selectedUser.username}
+                    </p>
                     <div className="mt-3 px-4 py-2 bg-gray-50 rounded-lg mx-auto max-w-xs">
-                      <p className="text-gray-600 italic text-sm">{selectedUser.bio || "No bio available"}</p>
+                      <p className="text-gray-600 italic text-sm">
+                        {selectedUser.bio || "No bio available"}
+                      </p>
                     </div>
                   </div>
 
@@ -501,7 +590,7 @@ const FriendsList = () => {
                         <FiEye className="mr-2" /> View Profile
                       </Link>
                     </motion.div>
-                    
+
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}

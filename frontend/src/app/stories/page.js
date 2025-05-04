@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 export default function StorySection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -151,7 +152,9 @@ export default function StorySection() {
                     className="absolute top-4 left-1/2 transform -translate-x-1/2 z-20"
                   >
                     <div className="w-16 h-16 rounded-full border-3 border-indigo-500 bg-white p-1 shadow-lg">
-                      <img
+                      <Image
+                                width={200}
+                                height={200} 
                         src={story.user.profilePicture}
                         alt={story.user.fullName}
                         className="w-full h-full rounded-full object-cover"

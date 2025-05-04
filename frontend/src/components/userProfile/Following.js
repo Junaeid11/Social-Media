@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { FaUserFriends } from 'react-icons/fa'; // Importing an icon for the message
@@ -22,7 +23,10 @@ const Following = ({ users, user }) => {
               className="flex flex-col items-center cursor-pointer"
               href={`/profile/${friend._id}`}
             >
-              <img
+              <Image
+                
+                          width={200}
+                          height={200} 
                 src={friend.profilePicture || "https://via.placeholder.com/80"}
                 alt={friend.fullName}
                 className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-gray-200"

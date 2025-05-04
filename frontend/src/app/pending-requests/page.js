@@ -1,42 +1,45 @@
-"use client"
-import React, { useEffect, useState, useRef } from 'react';
+"use client";
+import React, { useEffect, useState, useRef } from "react";
 import {
   fetchReceivedRequests,
   acceptFriendRequest,
   rejectFriendRequest,
-} from '@/redux/friendRequests/friendRequestsSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import AuthRedirect from '@/components/AuthRedirect';
-import { 
-  FiUserCheck, 
-  FiUserX, 
-  FiSearch, 
-  FiRefreshCw, 
-  FiX, 
-  FiCheck, 
+} from "@/redux/friendRequests/friendRequestsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import AuthRedirect from "@/components/AuthRedirect";
+import {
+  FiUserCheck,
+  FiUserX,
+  FiSearch,
+  FiRefreshCw,
+  FiX,
+  FiCheck,
   FiEye,
   FiFilter,
   FiUsers,
-  FiClock 
-} from 'react-icons/fi';
-import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
-import { IoExpandSharp } from 'react-icons/io5';
-import { useLoading } from '@/components/LoadingProvider';
+  FiClock,
+} from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { IoExpandSharp } from "react-icons/io5";
+import { useLoading } from "@/components/LoadingProvider";
+import Image from "next/image";
 
 const PendingRequests = () => {
   const dispatch = useDispatch();
-  const receivedRequests = useSelector((state) => state.friendRequests.receivedRequests);
+  const receivedRequests = useSelector(
+    (state) => state.friendRequests.receivedRequests
+  );
   const { userDetails } = useSelector((state) => state.auth);
   const { showLoadingFor } = useLoading();
-  
+
   // UI States
-  const [searchTerm, setSearchTerm] = useState('');
-  const [viewMode, setViewMode] = useState('grid');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState("grid");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [sortBy, setSortBy] = useState('name');
+  const [sortBy, setSortBy] = useState("name");
   const searchInputRef = useRef(null);
 
   useEffect(() => {
@@ -59,18 +62,26 @@ const PendingRequests = () => {
   };
 
   // Filter requests by search term
-  const filteredRequests = receivedRequests.filter(request => {
-    const sender = request.sender;
-    return sender.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      sender.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (sender.bio && sender.bio.toLowerCase().includes(searchTerm.toLowerCase()));
-  }).sort((a, b) => {
-    // Sort according to selected sort criteria
-    if (sortBy === 'name') return a.sender.fullName.localeCompare(b.sender.fullName);
-    if (sortBy === 'username') return a.sender.username.localeCompare(b.sender.username);
-    if (sortBy === 'recent') return new Date(b.createdAt) - new Date(a.createdAt);
-    return 0;
-  });
+  const filteredRequests = receivedRequests
+    .filter((request) => {
+      const sender = request.sender;
+      return (
+        sender.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        sender.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (sender.bio &&
+          sender.bio.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    })
+    .sort((a, b) => {
+      // Sort according to selected sort criteria
+      if (sortBy === "name")
+        return a.sender.fullName.localeCompare(b.sender.fullName);
+      if (sortBy === "username")
+        return a.sender.username.localeCompare(b.sender.username);
+      if (sortBy === "recent")
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      return 0;
+    });
 
   // Card component for grid view
   const RequestCard = ({ request }) => {
@@ -80,16 +91,25 @@ const PendingRequests = () => {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        whileHover={{ y: -8, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
+        whileHover={{
+          y: -8,
+          boxShadow:
+            "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+        }}
         className="bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl border border-gray-100 relative group"
       >
         <div className="relative">
           {/* Cover image with gradient overlay */}
           <div className="h-28 bg-gradient-to-r from-blue-400 to-indigo-500 relative">
-            <img 
-              src={request.sender.coverImage || 'https://via.placeholder.com/500x200?text=Cover+Image'} 
-              className='h-full w-full object-cover transition-transform duration-700 group-hover:scale-105' 
-              alt={request.sender.fullName} 
+            <Image
+              width={200}
+              height={200}
+              src={
+                request.sender.coverImage ||
+                "https://via.placeholder.com/500x200?text=Cover+Image"
+              }
+              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              alt={request.sender.fullName}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-50"></div>
           </div>
@@ -115,7 +135,9 @@ const PendingRequests = () => {
                 whileHover={{ scale: 1.08, y: -5 }}
                 className="w-20 h-20 rounded-full border-4 border-white overflow-hidden shadow-lg group-hover:border-blue-100 transition-all duration-300"
               >
-                <img
+                <Image
+                  width={200}
+                  height={200}
                   src={request.sender.profilePicture}
                   alt={request.sender.fullName}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -128,11 +150,17 @@ const PendingRequests = () => {
         <div className="pt-14 pb-5 px-5">
           <div className="text-center mb-4">
             <Link href={`profile/${request.sender._id}`} className="group">
-              <h3 className="font-bold text-gray-800 text-lg capitalize group-hover:text-blue-600 transition-colors duration-300">{request.sender.fullName}</h3>
+              <h3 className="font-bold text-gray-800 text-lg capitalize group-hover:text-blue-600 transition-colors duration-300">
+                {request.sender.fullName}
+              </h3>
             </Link>
-            <p className="text-sm text-blue-500 font-medium">@{request.sender.username}</p>
+            <p className="text-sm text-blue-500 font-medium">
+              @{request.sender.username}
+            </p>
             <div className="mt-2 h-10">
-              <p className="text-sm text-gray-600 line-clamp-2 italic bg-gray-50 p-1.5 rounded-lg">{request.sender.bio || "No bio available"}</p>
+              <p className="text-sm text-gray-600 line-clamp-2 italic bg-gray-50 p-1.5 rounded-lg">
+                {request.sender.bio || "No bio available"}
+              </p>
             </div>
           </div>
 
@@ -141,10 +169,12 @@ const PendingRequests = () => {
               href={`profile/${request.sender._id}`}
               className="w-full py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all duration-300 flex items-center justify-center group"
             >
-              <FiEye className="mr-2 group-hover:scale-110 transition-transform duration-300" /> 
-              <span className="group-hover:translate-x-0.5 transition-transform duration-300">View Profile</span>
+              <FiEye className="mr-2 group-hover:scale-110 transition-transform duration-300" />
+              <span className="group-hover:translate-x-0.5 transition-transform duration-300">
+                View Profile
+              </span>
             </Link>
-            
+
             <div className="flex gap-2">
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -165,10 +195,10 @@ const PendingRequests = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Status indicator */}
         <div className="absolute top-0 left-0 m-3">
-          <motion.div 
+          <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             className="p-1.5 rounded-full bg-amber-500 shadow-md"
@@ -199,7 +229,9 @@ const PendingRequests = () => {
                 transition={{ type: "spring", stiffness: 300 }}
                 className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-blue-200 transition-all duration-300 group-hover:border-blue-400 shadow-md"
               >
-                <img
+                <Image
+                  width={200}
+                  height={200}
                   src={request.sender.profilePicture}
                   alt={request.sender.fullName}
                   className="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-110"
@@ -216,7 +248,9 @@ const PendingRequests = () => {
               </h3>
             </Link>
             <div className="flex items-center space-x-2">
-              <p className="text-sm text-blue-500 font-medium">@{request.sender.username}</p>
+              <p className="text-sm text-blue-500 font-medium">
+                @{request.sender.username}
+              </p>
               {request.sender.isDpVerify && (
                 <motion.div
                   whileHover={{ scale: 1.2, rotate: 360 }}
@@ -227,7 +261,9 @@ const PendingRequests = () => {
                 </motion.div>
               )}
             </div>
-            <p className="text-xs text-gray-500 mt-1 line-clamp-1">{request.sender.bio || "No bio available"}</p>
+            <p className="text-xs text-gray-500 mt-1 line-clamp-1">
+              {request.sender.bio || "No bio available"}
+            </p>
           </div>
         </div>
 
@@ -288,8 +324,12 @@ const PendingRequests = () => {
           <div className="container mx-auto px-4 py-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-gray-800">Pending Requests</h1>
-                <p className="text-sm text-gray-500">Manage your friend requests</p>
+                <h1 className="text-2xl font-bold text-gray-800">
+                  Pending Requests
+                </h1>
+                <p className="text-sm text-gray-500">
+                  Manage your friend requests
+                </p>
               </div>
 
               <div className="flex items-center gap-3">
@@ -305,7 +345,7 @@ const PendingRequests = () => {
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   {searchTerm && (
                     <button
-                      onClick={() => setSearchTerm('')}
+                      onClick={() => setSearchTerm("")}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     >
                       <FiX size={16} />
@@ -326,17 +366,33 @@ const PendingRequests = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={refreshData}
-                  className={`p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors ${isRefreshing ? 'animate-spin' : ''}`}
+                  className={`p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors ${
+                    isRefreshing ? "animate-spin" : ""
+                  }`}
                 >
                   <FiRefreshCw size={20} />
                 </motion.button>
 
                 <div className="flex border border-gray-300 rounded-lg overflow-hidden">
                   <button
-                    onClick={() => setViewMode('grid')}
-                    className={`p-2 ${viewMode === 'grid' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+                    onClick={() => setViewMode("grid")}
+                    className={`p-2 ${
+                      viewMode === "grid"
+                        ? "bg-blue-500 text-white"
+                        : "bg-white text-gray-700 hover:bg-gray-100"
+                    }`}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <rect x="3" y="3" width="7" height="7"></rect>
                       <rect x="14" y="3" width="7" height="7"></rect>
                       <rect x="14" y="14" width="7" height="7"></rect>
@@ -344,10 +400,24 @@ const PendingRequests = () => {
                     </svg>
                   </button>
                   <button
-                    onClick={() => setViewMode('list')}
-                    className={`p-2 ${viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+                    onClick={() => setViewMode("list")}
+                    className={`p-2 ${
+                      viewMode === "list"
+                        ? "bg-blue-500 text-white"
+                        : "bg-white text-gray-700 hover:bg-gray-100"
+                    }`}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
                       <line x1="8" y1="6" x2="21" y2="6"></line>
                       <line x1="8" y1="12" x2="21" y2="12"></line>
                       <line x1="8" y1="18" x2="21" y2="18"></line>
@@ -371,20 +441,23 @@ const PendingRequests = () => {
                 >
                   <div className="flex flex-wrap gap-4">
                     <div>
-                      <h3 className="font-medium text-gray-700 mb-2">Sort By</h3>
+                      <h3 className="font-medium text-gray-700 mb-2">
+                        Sort By
+                      </h3>
                       <div className="flex flex-wrap gap-2">
                         {[
-                          { id: 'name', label: 'Name' },
-                          { id: 'username', label: 'Username' },
-                          { id: 'recent', label: 'Recently Received' },
+                          { id: "name", label: "Name" },
+                          { id: "username", label: "Username" },
+                          { id: "recent", label: "Recently Received" },
                         ].map((sort) => (
                           <button
                             key={sort.id}
                             onClick={() => setSortBy(sort.id)}
-                            className={`px-3 py-1.5 rounded-full text-sm ${sortBy === sort.id
-                                ? 'bg-blue-500 text-white'
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                              }`}
+                            className={`px-3 py-1.5 rounded-full text-sm ${
+                              sortBy === sort.id
+                                ? "bg-blue-500 text-white"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                            }`}
                           >
                             {sort.label}
                           </button>
@@ -400,7 +473,8 @@ const PendingRequests = () => {
             <div className="mt-4">
               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
                 <FiUsers className="mr-1.5" />
-                {filteredRequests.length} {filteredRequests.length === 1 ? 'Request' : 'Requests'}
+                {filteredRequests.length}{" "}
+                {filteredRequests.length === 1 ? "Request" : "Requests"}
               </span>
             </div>
           </div>
@@ -417,18 +491,30 @@ const PendingRequests = () => {
               <div className="flex justify-center mb-4">
                 <FiClock size={48} className="text-amber-400" />
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">No Pending Friend Requests</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">
+                No Pending Friend Requests
+              </h3>
               <p className="text-gray-600 mb-6">
-                You currently have no friend requests waiting for your approval. Connect with others to expand your network!
+                You currently have no friend requests waiting for your approval.
+                Connect with others to expand your network!
               </p>
-              <Link href="/people" className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors flex items-center mx-auto w-max">
+              <Link
+                href="/people"
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors flex items-center mx-auto w-max"
+              >
                 <FiUsers className="mr-2" /> Find People
               </Link>
             </motion.div>
           ) : (
-            <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
+            <div
+              className={
+                viewMode === "grid"
+                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                  : "space-y-4"
+              }
+            >
               <AnimatePresence>
-                {filteredRequests.map(request => (
+                {filteredRequests.map((request) => (
                   <motion.div
                     key={request._id}
                     layout
@@ -437,7 +523,7 @@ const PendingRequests = () => {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.2 }}
                   >
-                    {viewMode === 'grid' ? (
+                    {viewMode === "grid" ? (
                       <RequestCard request={request} />
                     ) : (
                       <RequestListItem request={request} />
@@ -468,9 +554,12 @@ const PendingRequests = () => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="relative h-40 overflow-hidden">
-                  <motion.img 
-                    src={selectedUser.coverImage || 'https://via.placeholder.com/500x200?text=Cover+Image'} 
-                    className='h-full w-full object-cover' 
+                  <motion.img
+                    src={
+                      selectedUser.coverImage ||
+                      "https://via.placeholder.com/500x200?text=Cover+Image"
+                    }
+                    className="h-full w-full object-cover"
                     alt={selectedUser.fullName}
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.3 }}
@@ -485,12 +574,14 @@ const PendingRequests = () => {
                 </div>
 
                 <div className="px-6 pt-14 pb-6 -mt-12 relative z-10">
-                  <motion.div 
+                  <motion.div
                     className="flex justify-center -mt-16 mb-4"
                     whileHover={{ y: -5 }}
                     transition={{ type: "spring", stiffness: 300 }}
                   >
-                    <img
+                    <Image
+                      width={200}
+                      height={200}
                       src={selectedUser.profilePicture}
                       alt={selectedUser.fullName}
                       className="w-28 h-28 rounded-full border-4 border-white shadow-lg object-cover"
@@ -505,10 +596,16 @@ const PendingRequests = () => {
                   </motion.div>
 
                   <div className="text-center mb-6">
-                    <h3 className="text-2xl font-bold text-gray-800">{selectedUser.fullName}</h3>
-                    <p className="text-blue-500 font-medium">@{selectedUser.username}</p>
+                    <h3 className="text-2xl font-bold text-gray-800">
+                      {selectedUser.fullName}
+                    </h3>
+                    <p className="text-blue-500 font-medium">
+                      @{selectedUser.username}
+                    </p>
                     <div className="mt-3 px-4 py-2 bg-gray-50 rounded-lg mx-auto max-w-xs">
-                      <p className="text-gray-600 italic text-sm">{selectedUser.bio || "No bio available"}</p>
+                      <p className="text-gray-600 italic text-sm">
+                        {selectedUser.bio || "No bio available"}
+                      </p>
                     </div>
                   </div>
 
@@ -518,7 +615,9 @@ const PendingRequests = () => {
                       whileTap={{ scale: 0.95 }}
                       className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors flex items-center shadow-md"
                       onClick={() => {
-                        const request = receivedRequests.find(req => req.sender._id === selectedUser._id);
+                        const request = receivedRequests.find(
+                          (req) => req.sender._id === selectedUser._id
+                        );
                         if (request) {
                           handleAcceptRequest(request._id);
                           setSelectedUser(null);
@@ -527,13 +626,15 @@ const PendingRequests = () => {
                     >
                       <FiUserCheck className="mr-2" /> Accept Request
                     </motion.button>
-                    
+
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors flex items-center shadow-md"
                       onClick={() => {
-                        const request = receivedRequests.find(req => req.sender._id === selectedUser._id);
+                        const request = receivedRequests.find(
+                          (req) => req.sender._id === selectedUser._id
+                        );
                         if (request) {
                           handleRejectRequest(request._id);
                           setSelectedUser(null);

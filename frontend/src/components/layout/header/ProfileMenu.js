@@ -22,6 +22,7 @@ import {
 import { IoSettingsSharp } from 'react-icons/io5'
 import { BsFillCircleFill } from 'react-icons/bs'
 import ModalPortal from '@/components/common/ModalPortal'
+import Image from 'next/image'
 
 const ProfileMenu = ({ userDetails }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -99,7 +100,9 @@ const ProfileMenu = ({ userDetails }) => {
         whileTap={{ scale: 0.98 }}
       >
         <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-indigo-500 ring-offset-2">
-          <img
+            <Image
+                      width={200}
+                      height={200} 
             src={userDetails?.profilePicture || "https://i.pravatar.cc/150?img=32"}
             alt={userDetails?.fullName || "User"}
             className="w-full h-full object-cover"
@@ -183,7 +186,9 @@ const ProfileMenu = ({ userDetails }) => {
                         animate={pulseAnimation[animation]}
                       >
                         <div className="w-24 h-24 rounded-full overflow-hidden ring-4 ring-indigo-100">
-                          <img
+                            <Image
+                                      width={200}
+                                      height={200} 
                             src={userDetails?.profilePicture || "https://i.pravatar.cc/150?img=32"}
                             alt={userDetails?.fullName || "User"}
                             className="w-full h-full object-cover"

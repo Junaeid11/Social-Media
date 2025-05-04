@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { FaUserFriends } from 'react-icons/fa';
@@ -25,7 +26,9 @@ const FriendList = ({ users, user }) => {
               href={`/profile/${friend._id}`}
               className="relative group flex flex-col items-center p-2 transition-transform transform hover:scale-105 cursor-pointer"
             >
-              <img
+                <Image
+                          width={200}
+                          height={200} 
                 src={friend.profilePicture || "https://via.placeholder.com/80"}
                 alt={friend.fullName}
                 className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-gray-200"

@@ -20,6 +20,8 @@ import { useLoading } from "@/components/LoadingProvider";
 import { useRouter } from "next/navigation";
 import ProfileMenu from "./ProfileMenu";
 import Link from "next/link";
+import logo from './../../../components/logo2.png'
+import Image from "next/image";
 
 const Header = ({ toggleSidebar }) => {
   const dispatch = useDispatch();
@@ -86,7 +88,12 @@ const Header = ({ toggleSidebar }) => {
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   className="relative"
                 >
-                  {/* {logo dibo} */}
+                  <Image
+                  src={logo}
+                  width={50}
+                  height={200}
+                  alt="LOLfeed"
+                  />
                   <motion.div
                     className="absolute inset-0 bg-indigo-400/20 rounded-lg blur-md"
                     animate={{
@@ -101,7 +108,7 @@ const Header = ({ toggleSidebar }) => {
                   />
                 </motion.div>
                 <span className="font-bold text-lg bg-gradient-to-r from-red-600 to-red-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-red-600 transition-all duration-500">
-                  lal
+                LOLfeed
                 </span>
               </div>
 

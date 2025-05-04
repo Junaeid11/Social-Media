@@ -4,6 +4,7 @@ import { FiSearch, FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
+import Image from 'next/image';
 
 const Search = ({ isMobile = false, onClose }) => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -109,7 +110,9 @@ const Search = ({ isMobile = false, onClose }) => {
                     onClick={onClose}
                   >
                     <div className="relative">
-                      <img
+                        <Image
+                                  width={200}
+                                  height={200} 
                         className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm"
                         src={user?.profilePicture}
                         alt={user?.fullName}
@@ -182,7 +185,9 @@ const Search = ({ isMobile = false, onClose }) => {
                   {(searchTerm ? filteredUsers : users.slice(0, 6)).map((user) => (
                     <Link href={`profile/${user._id}`} key={user._id} className="flex hover:bg-gray-50 items-center py-2 px-3 transition-colors">
                       <div className="relative">
-                        <img
+                          <Image
+                                    width={200}
+                                    height={200} 
                           className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
                           src={user?.profilePicture}
                           alt={user?.fullName}

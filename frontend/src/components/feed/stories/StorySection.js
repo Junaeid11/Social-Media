@@ -6,6 +6,7 @@ import { fetchUserDetails } from '@/redux/auth/authSlice';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiChevronLeft, FiChevronRight, FiPlus } from 'react-icons/fi';
+import Image from 'next/image';
 
 export default function StorySection() {
   const dispatch = useDispatch();
@@ -85,7 +86,9 @@ export default function StorySection() {
                       className="w-20 h-20 rounded-full overflow-hidden bg-gradient-to-br from-indigo-500 to-blue-600 p-[2px]"
                     >
                       <div className="w-full h-full rounded-full overflow-hidden bg-white p-[2px]">
-                        <img
+                          <Image
+                                    width={200}
+                                    height={200} 
                           src={userDetails.profilePicture}
                           alt={userDetails.fullName}
                           className="w-full h-full object-cover rounded-full"
@@ -121,7 +124,9 @@ export default function StorySection() {
                       className={`w-20 h-20 rounded-full overflow-hidden ${hoveredStory === story._id ? 'bg-gradient-to-br from-blue-500 to-indigo-600' : 'bg-gradient-to-br from-indigo-400 to-blue-500'} p-[2px]`}
                     >
                       <div className="w-full h-full rounded-full overflow-hidden bg-white p-[2px]">
-                        <img
+                          <Image
+                                    width={200}
+                                    height={200} 
                           src={story.user.profilePicture}
                           alt={story.user.fullName}
                           className="w-full h-full object-cover rounded-full"

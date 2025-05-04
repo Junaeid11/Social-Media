@@ -4,6 +4,7 @@ import PostList from "@/components/feed/posts/PostList";
 import { BsFillPostcardFill } from 'react-icons/bs';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 const Posts = ({ userPosts, loggedInUserId, user, usersList }) => {
   const [showMoreUsers, setShowMoreUsers] = useState(false);
@@ -37,7 +38,9 @@ const Posts = ({ userPosts, loggedInUserId, user, usersList }) => {
                   transition={{ delay: index * 0.05 }}
                 >
                   <Link href={`${person._id}`} className="flex items-center cursor-pointer">
-                    <img
+                    <Image
+                                width={200}
+                                height={200} 
                       src={person.profilePicture}
                       alt={person.fullName}
                       className="w-10 h-10 rounded-full mr-3 object-cover"

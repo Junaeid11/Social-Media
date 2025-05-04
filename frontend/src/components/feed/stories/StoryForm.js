@@ -14,6 +14,7 @@ import {
   FiArrowLeft, 
   FiLink
 } from "react-icons/fi";
+import Image from "next/image";
 
 const StoryForm = ({ isOpen, onClose, storyToast }) => {
   const dispatch = useDispatch();
@@ -94,7 +95,9 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
                 whileTap={{ scale: 0.95 }}
                 className="relative"
               >
-                <img
+                  <Image
+                            width={200}
+                            height={200} 
                   className="w-16 h-16 object-cover rounded-full shadow-lg ring-3 ring-indigo-100"
                   src={userDetails?.profilePicture || '/default-avatar.png'}
                   alt={userDetails?.fullName}
@@ -240,7 +243,9 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
                         animate={{ opacity: 1, y: 0 }}
                         className="mt-3 rounded-xl overflow-hidden border border-gray-200 h-32 bg-gray-50"
                       >
-                        <img 
+                          <Image
+                                    width={200}
+                                    height={200} 
                           src={image}
                           alt="Story preview"
                           className="w-full h-full object-cover"

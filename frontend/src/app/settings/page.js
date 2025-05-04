@@ -33,6 +33,7 @@ import {
 import { fetchUsers } from "@/redux/users/usersSlice";
 import ImagePreviewer from "@/components/ui/NMImageUploader/ImagePreviewer";
 import NMImageUploader from "@/components/ui/NMImageUploader";
+import Image from "next/image";
 
 const SettingsPage = () => {
   const [activeField, setActiveField] = useState(null);
@@ -100,30 +101,29 @@ const SettingsPage = () => {
     setFormData({ ...formData, [activeField]: e.target.value });
   };
 
-
   const [errors, setErrors] = useState({});
 
   const handleSave = async () => {
     try {
       const authToken = localStorage.getItem("authToken");
-  
+
       const dataToSend = new FormData();
-  
+
       const updatedData = {};
       if (formData[activeField]) {
         updatedData[activeField] = formData[activeField];
       }
-  
-      dataToSend.append("data", JSON.stringify(updatedData)); 
-  
+
+      dataToSend.append("data", JSON.stringify(updatedData));
+
       if (imageFiles.profilePicture) {
         dataToSend.append("profilePicture", imageFiles.profilePicture);
       }
-  
+
       if (imageFiles.coverImage) {
         dataToSend.append("coverImage", imageFiles.coverImage);
       }
-  
+
       await axios.put(
         `${process.env.NEXT_PUBLIC_BACKEND_API}/api/user/update`,
         dataToSend,
@@ -134,12 +134,14 @@ const SettingsPage = () => {
           },
         }
       );
-  
+
       dispatch(fetchUserDetails());
       setActiveField(null);
       setErrors({});
       toast.success(
-        `${activeField.charAt(0).toUpperCase() + activeField.slice(1)} updated successfully!`
+        `${
+          activeField.charAt(0).toUpperCase() + activeField.slice(1)
+        } updated successfully!`
       );
     } catch (error) {
       if (error.response?.data?.errors) {
@@ -150,7 +152,7 @@ const SettingsPage = () => {
       }
     }
   };
-  
+
   const renderImageForm = (field) => {
     if (activeField !== field) return null;
 
@@ -158,16 +160,15 @@ const SettingsPage = () => {
       <div className="flex gap-4 mt-4">
         {field === "profilePicture" || field === "coverImage" ? (
           <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            setImageFiles({
-              ...imageFiles,
-           [field]: e.target.files[0], /// Only take the first file
-            });
-          }}
-        />
-        
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              setImageFiles({
+                ...imageFiles,
+                [field]: e.target.files[0], /// Only take the first file
+              });
+            }}
+          />
         ) : (
           <input
             type={field === "password" ? "password" : "text"}
@@ -266,7 +267,9 @@ const SettingsPage = () => {
                 className="relative w-full h-full rounded-md overflow-hidden shadow-lg"
                 whileHover={{ scale: 1.05, rotate: 5 }}
               >
-                <img
+                <Image
+                  width={200}
+                  height={200}
                   src={
                     userDetails?.coverImage || "https://via.placeholder.com/100"
                   }
@@ -284,25 +287,7 @@ const SettingsPage = () => {
               >
                 <FaCamera size={14} />
               </motion.div>
-              {activeField === "coverImage" && (
-                <>
-                  {imagePreview.length > 0 ? (
-                    <ImagePreviewer
-                      setImageFiles={setImageFiles}
-                      imagePreview={imagePreview}
-                      setImagePreview={setImagePreview}
-                      className="mt-2"
-                    />
-                  ) : (
-                    <NMImageUploader
-                      setImageFiles={setImageFiles}
-                      setImagePreview={setImagePreview}
-                      label="Upload Cover Image"
-                      className="mt-2"
-                    />
-                  )}
-                </>
-              )}
+              
             </div>
 
             <div className="flex flex-col ml-3">
@@ -343,7 +328,9 @@ const SettingsPage = () => {
               className="relative w-full h-full rounded-full overflow-hidden border-4 border-white shadow-lg"
               whileHover={{ scale: 1.05, rotate: 5 }}
             >
-              <img
+              <Image
+                width={200}
+                height={200}
                 src={
                   userDetails?.profilePicture ||
                   "https://via.placeholder.com/100"
@@ -362,8 +349,6 @@ const SettingsPage = () => {
             >
               <FaCamera size={14} />
             </motion.div>
-
-          
           </div>
 
           <div className="flex flex-col ml-3">

@@ -10,6 +10,7 @@ import { timeAgo } from "@/utility/timeAgo";
 import StoryForm from '@/components/feed/stories/StoryForm';
 import AuthRedirect from '@/components/AuthRedirect';
 import { Loading } from "@/components";
+import Image from "next/image";
 
 const Page = props => {
   const params = use(props.params);
@@ -253,7 +254,9 @@ const Page = props => {
                           whileHover={{ scale: 1.1 }}
                           className="w-16 h-16 rounded-full border-2 border-indigo-400 bg-white p-0.5 shadow-md overflow-hidden"
                         >
-                          <img
+                         <Image
+                                   width={200}
+                                   height={200} 
                             src={userGroup.user.profilePicture}
                             alt={userGroup.user.fullName}
                             className="w-full h-full rounded-full object-cover"
