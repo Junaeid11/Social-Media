@@ -9,6 +9,9 @@ import {
   userDetails,
   updateUser,
 } from '../controllers/user.controllers.js';
+import { multerUpload } from '../config/multer.config.js';
+import { parseBody } from '../middleware/bodyParser.js';
+
 
 const router = express.Router();
 
@@ -28,6 +31,9 @@ router.get('/userDetails/:userId', userDetails);
 router.get('/', getAllUsers);
 
 // Route to update the user profile
-router.put('/update', fetchUser, updateUser); 
+router.put('/update', multerUpload.fields([
+  { name: 'profilePicture', maxCount: 1 },
+  { name: 'coverImage', maxCount: 1 },
+]),parseBody, fetchUser, updateUser); 
 
 export default router;

@@ -103,7 +103,7 @@ const Rightbar = () => {
               </div> */}
 
               {/* Navigation Menu */}
-              <motion.div
+              {/* <motion.div
                 className="bg-gray-50 rounded-xl p-3"
                 initial="hidden"
                 animate="visible"
@@ -152,7 +152,7 @@ const Rightbar = () => {
                     </Link>
                   </motion.div>
                 </motion.div>
-              </motion.div>
+              </motion.div> */}
 
               {/* Trending Hashtags */}
               <div className="bg-gray-50 rounded-xl p-3">
@@ -236,7 +236,7 @@ const Rightbar = () => {
                             className="text-xs bg-gray-100 hover:bg-indigo-100 hover:text-indigo-600 text-gray-600 px-2 py-1 rounded-md font-medium transition-colors"
                             whileHover={{ scale: 1.05 }}
                           >
-                            Follow
+                            View
                           </motion.button>
                         </Link>
                       </motion.div>
@@ -254,7 +254,7 @@ const Rightbar = () => {
           </div>
           {/* Mini Sidebar - Always Visible on the left */}
 
-          <div className="w-20 z-20">
+          <div className="w-20 z-20 hidden lg:flex">
             <div
               className="mini-sidebar w-20 py-6 px-3 bg-white/95 shadow-sm fixed overflow-y-auto rounded-xl border border-purple-100 flex flex-col items-center gap-6"
               style={{ height: "calc(100vh - 4rem)" }}
@@ -278,7 +278,8 @@ const Rightbar = () => {
                   whileHover={{ scale: 1.1, backgroundColor: "#9333EA", color: "#ffffff" }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <RiHomeLine size={18} />
+                  <Link href="/my-posts" >    <RiHomeLine size={18} /></Link>
+              
                 </motion.div>
 
                 <motion.div
@@ -286,7 +287,8 @@ const Rightbar = () => {
                   whileHover={{ scale: 1.1, backgroundColor: "#EC4899", color: "#ffffff" }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <RiCompassDiscoverLine size={18} />
+                  <Link href="/explore" >
+                  <RiCompassDiscoverLine size={18} /></Link>
                 </motion.div>
 
                 <motion.div
@@ -294,10 +296,10 @@ const Rightbar = () => {
                   whileHover={{ scale: 1.1, backgroundColor: "#F59E0B", color: "#ffffff" }}
                   whileTap={{ scale: 0.95 }}
                 >
+                  <Link href="/hashtags" >
                   <RiFireLine size={18} />
-                  <span className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                    3
-                  </span>
+                  </Link>
+               
                 </motion.div>
 
                 <motion.div
@@ -305,7 +307,8 @@ const Rightbar = () => {
                   whileHover={{ scale: 1.1, backgroundColor: "#14B8A6", color: "#ffffff" }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <RiBookmarkLine size={18} />
+                  <Link href="/bookmarks" >   <RiBookmarkLine size={18} /></Link>
+               
                 </motion.div>
 
                 <motion.div
@@ -313,7 +316,10 @@ const Rightbar = () => {
                   whileHover={{ scale: 1.1, backgroundColor: "#6366F1", color: "#ffffff" }}
                   whileTap={{ scale: 0.95 }}
                 >
+                     <Link href="/settings" >
+                     
                   <RiSettings4Line size={18} />
+                     </Link>
                 </motion.div>
               </div>
 

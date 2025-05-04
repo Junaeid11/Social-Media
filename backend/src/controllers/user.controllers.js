@@ -147,15 +147,13 @@ export const getAllUsers = asyncHandler(async (req, res, next) => {
 });
 
 // Update user profile
-export const updateUser = asyncHandler(async (req, res, next) => {
+export const  updateUser = asyncHandler(async (req, res, next) => {
   const userId = req.user.id;
   const {
     username,
     fullName,
     email,
     password,
-    profilePicture,
-    coverImage,
     location,
     bio,
     dob,
@@ -166,32 +164,40 @@ export const updateUser = asyncHandler(async (req, res, next) => {
   if (!user) {
     return res.status(404).json({ message: 'User not found' });
   }
+  console.log(user)
+
+  // Process uploaded files from Cloudinary
+  if (req.files?.profilePicture?.length) {
+    user.profilePicture = req.files.profilePicture[0].path;
+  }
+  if (req.files?.coverImage?.length) {
+    user.coverImage = req.files.coverImage[0].path;
+  }
+
+  // Update other fields
+  if (username) user.username = username;
+  if (fullName) user.fullName = fullName;
+  if (email) user.email = email;
+  if (password) user.password = password; // Make sure to hash this in real code
+  if (location) user.location = location;
+  if (bio) user.bio = bio;
+  if (dob) user.dob = dob;
+  if (isDpVerify) user.isDpVerify = isDpVerify;
 
   try {
-    if (username) user.username = username;
-    if (fullName) user.fullName = fullName;
-    if (email) user.email = email;
-    if (password) user.password = password;
-    if (profilePicture) user.profilePicture = profilePicture;
-    if (coverImage) user.coverImage = coverImage;
-    if (location) user.location = location;
-    if (bio) user.bio = bio;
-    if (dob) user.dob = dob;
-    if (isDpVerify) user.isDpVerify = isDpVerify;
-
     await user.save();
     res.json({ data: user });
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
-      // Format errors for the frontend
       const errors = {};
       for (let field in err.errors) {
-        errors[field] = {
-          message: err.errors[field].message
-        };
+        errors[field] = { message: err.errors[field].message };
       }
       return res.status(400).json({ errors });
     }
     next(err);
   }
 });
+
+
+

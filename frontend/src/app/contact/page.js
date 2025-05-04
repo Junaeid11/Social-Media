@@ -12,44 +12,35 @@ export default function ContactPage() {
   const socialMedia = [
     {
       name: 'LinkedIn',
-      link: 'https://www.linkedin.com/in/rehman-nry',
+      link: 'https://www.linkedin.com/in/junaeidahmedtanim',
       icon: <FaLinkedin className="text-2xl" />,
       description: 'Connect with me professionally and explore my career journey.',
-      username: 'rehman-nry',
+      username: 'tanim',
       color: 'bg-blue-50 text-blue-600 border-blue-200',
       iconBg: 'bg-blue-600',
       hoverColor: 'hover:border-blue-400 hover:shadow-blue-200',
     },
     {
       name: 'GitHub',
-      link: 'https://github.com/rehmanNRY',
+      link: 'https://github.com/junaeid11',
       icon: <FaGithub className="text-2xl" />,
       description: 'Explore my repositories and coding projects.',
-      username: 'rehmanNRY',
+      username: 'junaeid11',
       color: 'bg-slate-50 text-slate-800 border-slate-200',
       iconBg: 'bg-slate-800',
       hoverColor: 'hover:border-slate-400 hover:shadow-slate-200',
     },
     {
       name: 'Instagram',
-      link: 'https://www.instagram.com/rehman_nry/',
+      link: 'https://www.instagram.com/_juna_eid_',
       icon: <FaInstagram className="text-2xl" />,
       description: 'Follow my visual journey and creative moments.',
-      username: 'rehman_nry',
+      username: '_juna_eid_',
       color: 'bg-pink-50 text-pink-600 border-pink-200',
       iconBg: 'bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500',
       hoverColor: 'hover:border-pink-400 hover:shadow-pink-200',
     },
-    {
-      name: 'WhatsApp',
-      link: 'https://wa.link/fcyw8d',
-      icon: <FaWhatsapp className="text-2xl" />,
-      description: "Let's chat about projects, ideas, or collaborations!",
-      username: '923014340329',
-      color: 'bg-green-50 text-green-600 border-green-200',
-      iconBg: 'bg-green-500',
-      hoverColor: 'hover:border-green-400 hover:shadow-green-200',
-    },
+    
   ];
 
   const contactMethods = [
@@ -57,7 +48,7 @@ export default function ContactPage() {
       name: 'Send Email',
       description: 'Reach out via email for professional inquiries',
       icon: <FiMail className="text-blue-600 text-2xl" />,
-      action: 'mailto:rehman.contact9@gmail.com',
+      action: 'mailto:junaeidahmed979@gmail.com',
       color: 'bg-blue-50 border-blue-200',
       hoverColor: 'hover:border-blue-400 hover:bg-blue-100',
     },
@@ -65,7 +56,7 @@ export default function ContactPage() {
       name: 'Direct Message',
       description: 'Send me a direct message for quick responses',
       icon: <FiMessageSquare className="text-indigo-600 text-2xl" />,
-      action: 'https://wa.link/fcyw8d',
+      // action: 'https://wa.link/fcyw8d',
       color: 'bg-indigo-50 border-indigo-200',
       hoverColor: 'hover:border-indigo-400 hover:bg-indigo-100',
     }
@@ -110,7 +101,7 @@ export default function ContactPage() {
             <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">
               Social Profiles
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {socialMedia.map((media, index) => (
                 <motion.div
                   key={media.name}
@@ -156,12 +147,12 @@ export default function ContactPage() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-white/90 to-transparent flex justify-center"
+                        className="absolute bottom-0 left-0 right-0  p-4 bg-gradient-to-t from-white/90 to-transparent flex justify-end"
                       >
                         <motion.span 
-                          initial={{ y: 10 }}
+                          initial={{ y: 1 }}
                           animate={{ y: 0 }}
-                          className="text-sm font-medium flex items-center gap-1"
+                          className="text-sm  font-medium flex items-center gap-1"
                         >
                           Visit Profile <FiArrowRight />
                         </motion.span>
@@ -240,7 +231,7 @@ export default function ContactPage() {
               <motion.a
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                href="https://rehman-nry.netlify.app/"
+                href="https://eid-portfolio.vercel.app"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center px-8 py-4 bg-blue-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-300"
