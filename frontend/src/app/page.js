@@ -49,6 +49,7 @@ export default function Home() {
   }
 
   return (
+    <AuthRedirect>
       <main className="bg-[#F5F6FA] mx-auto p-4 space-y-3 w-full min-h-screen">
         <ProfilePicVerify />
         <StorySection />
@@ -65,5 +66,6 @@ export default function Home() {
           </div>
         )}
       </main>
+      </AuthRedirect>
   );
 }

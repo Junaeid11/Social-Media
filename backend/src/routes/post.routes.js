@@ -19,7 +19,7 @@ const router = express.Router();
 
 // Route to create a new post
 router.post('/', multerUpload.fields([
-  { name: 'image', maxCount: 4 },
+  { name: 'image', maxCount: 10 },
 
 ]),parseBody, fetchUser, createPost);
 

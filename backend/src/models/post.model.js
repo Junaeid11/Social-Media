@@ -28,7 +28,7 @@ const PostSchema = new Schema({
     maxLength: [50, 'Feeling cannot exceed 50 characters'],
   },
   image: {
-    type: String,
+    type: [String],
   },
   backgroundColor: {
     type: String,

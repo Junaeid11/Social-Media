@@ -114,7 +114,7 @@ const SettingsPage = () => {
         updatedData[activeField] = formData[activeField];
       }
   
-      dataToSend.append("data", JSON.stringify(updatedData)); // 👈 Send as string for backend
+      dataToSend.append("data", JSON.stringify(updatedData)); 
   
       if (imageFiles.profilePicture) {
         dataToSend.append("profilePicture", imageFiles.profilePicture);

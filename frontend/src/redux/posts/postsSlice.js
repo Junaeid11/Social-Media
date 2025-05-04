@@ -4,16 +4,10 @@ import axiosInstance from '@/api/axiosInstance';
 // Async thunk to create a new post
 export const createPost = createAsyncThunk(
   'posts/createPost',
-  async ({ content, image, backgroundColor, pollData, feeling }, { rejectWithValue }) => {
+  async (formData, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('authToken');
-      const response = await axiosInstance.post('/posts', { 
-        content, 
-        image, 
-        backgroundColor,
-        pollData,
-        feeling,
-      }, {
+      const response = await axiosInstance.post('/posts', formData, {
         headers: {
           'auth-token': token,
         },

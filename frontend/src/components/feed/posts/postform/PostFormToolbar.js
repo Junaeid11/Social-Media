@@ -60,13 +60,13 @@ const PostFormToolbar = ({
       showState: showEmojis,
       setShowState: setShowEmojis
     },
-    {
-      name: 'gif',
-      icon: <AiOutlineGif className="w-5 h-5" />,
-      title: 'Add GIF',
-      showState: showGifSelector,
-      setShowState: setShowGifSelector
-    },
+    // {
+    //   name: 'gif',
+    //   icon: <AiOutlineGif className="w-5 h-5" />,
+    //   title: 'Add GIF',
+    //   showState: showGifSelector,
+    //   setShowState: setShowGifSelector
+    // },
     {
       name: 'poll',
       icon: <BiPoll className="w-5 h-5" />,

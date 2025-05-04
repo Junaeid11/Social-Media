@@ -139,8 +139,15 @@ const PostForm = () => {
           duration: pollDuration
         };
       }
-
-      await dispatch(createPost(postData)).unwrap();
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(postData));
+  
+      image.forEach((file) => {
+        formData.append("image", file); // Append each file separately
+      });
+  
+      await dispatch(createPost(formData)).unwrap();
+  
       setContent('');
       setImage('');
       setPreviewImage(null);
@@ -269,6 +276,7 @@ const PostForm = () => {
     setShowAdvancedOptions(false);
   };
 
+
   if (!isClient) {
     return null;
   }
@@ -368,11 +376,11 @@ const PostForm = () => {
             />
 
             {/* GIF selector */}
-            <PostFormGifs
+            {/* <PostFormGifs
               showGifSelector={showGifSelector}
               setShowGifSelector={setShowGifSelector}
               handleGifSelect={handleGifSelect}
-            />
+            /> */}
 
             {/* Poll creation interface */}
             <PostFormPoll
