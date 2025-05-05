@@ -35,14 +35,10 @@ export const getAllPosts = createAsyncThunk(
 // Async thunk to edit a post
 export const editPost = createAsyncThunk(
   'posts/editPost',
-  async ({ postId, content, image, backgroundColor }, { rejectWithValue }) => {
+  async ({postId, formData}, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem('authToken');
-      const response = await axiosInstance.put(`/posts/${postId}`, { 
-        content, 
-        image,
-        backgroundColor 
-      }, {
+      const response = await axiosInstance.put(`/posts/${postId}`, formData, {
         headers: {
           'auth-token': token,
         },

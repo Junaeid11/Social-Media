@@ -1,10 +1,10 @@
-"use client"
-import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { logout } from '@/redux/auth/authSlice'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
+"use client";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { logout } from "@/redux/auth/authSlice";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 
 // React Icons imports (replacing Lucide)
 import {
@@ -17,78 +17,76 @@ import {
   FaChartLine,
   FaChevronDown,
   FaTimes,
-  FaKeyboard
-} from 'react-icons/fa'
-import { IoSettingsSharp } from 'react-icons/io5'
-import { BsFillCircleFill } from 'react-icons/bs'
-import ModalPortal from '@/components/common/ModalPortal'
-import Image from 'next/image'
+  FaKeyboard,
+} from "react-icons/fa";
+import { IoSettingsSharp } from "react-icons/io5";
+import { BsFillCircleFill } from "react-icons/bs";
+import ModalPortal from "@/components/common/ModalPortal";
+import Image from "next/image";
 
 const ProfileMenu = ({ userDetails }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState('main')
-  const [animation, setAnimation] = useState('pulse')
-  const menuRef = useRef(null)
-  const buttonRef = useRef(null)
-  const router = useRouter()
-  const dispatch = useDispatch()
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("main");
+  const [animation, setAnimation] = useState("pulse");
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleClickOutside = (event) => {
     if (isOpen && menuRef.current && !menuRef.current.contains(event.target)) {
-      setIsOpen(false)
+      setIsOpen(false);
     }
-  }
+  };
 
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside)
-    return () => document.removeEventListener('click', handleClickOutside)
-  }, [isOpen])
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [isOpen]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && isOpen) {
-        setIsOpen(false)
+      if (e.key === "Escape" && isOpen) {
+        setIsOpen(false);
       }
-      if (e.key === '/' && e.ctrlKey) {
-        setIsOpen(prev => !prev)
+      if (e.key === "/" && e.ctrlKey) {
+        setIsOpen((prev) => !prev);
       }
-    }
+    };
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen])
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
 
   // Change animation randomly on menu open for more interactivity
   useEffect(() => {
     if (isOpen) {
-      const animations = ['pulse', 'bounce', 'float']
-      setAnimation(animations[Math.floor(Math.random() * animations.length)])
+      const animations = ["pulse", "bounce", "float"];
+      setAnimation(animations[Math.floor(Math.random() * animations.length)]);
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   const handleLogout = () => {
-    dispatch(logout())
-    router.push('/login')
-  }
-
-
+    dispatch(logout());
+    router.push("/login");
+  };
 
   // Animation variants for more interactive elements
   const pulseAnimation = {
     pulse: {
       scale: [1, 1.05, 1],
-      transition: { repeat: Infinity, repeatType: "reverse", duration: 1.5 }
+      transition: { repeat: Infinity, repeatType: "reverse", duration: 1.5 },
     },
     bounce: {
       y: [0, -10, 0],
-      transition: { repeat: Infinity, repeatType: "reverse", duration: 1.2 }
+      transition: { repeat: Infinity, repeatType: "reverse", duration: 1.2 },
     },
     float: {
       y: [0, -5, 0],
       x: [0, 3, 0],
-      transition: { repeat: Infinity, repeatType: "reverse", duration: 2 }
-    }
-  }
+      transition: { repeat: Infinity, repeatType: "reverse", duration: 2 },
+    },
+  };
 
   return (
     <div className="relative z-50" ref={menuRef}>
@@ -100,15 +98,17 @@ const ProfileMenu = ({ userDetails }) => {
         whileTap={{ scale: 0.98 }}
       >
         <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-indigo-500 ring-offset-2">
-            <Image
-                      width={200}
-                      height={200} 
-            src={userDetails?.profilePicture || "https://i.pravatar.cc/150?img=32"}
+          <Image
+            width={200}
+            height={200}
+            src={
+              userDetails?.profilePicture || "https://i.pravatar.cc/150?img=32"
+            }
             alt={userDetails?.fullName || "User"}
             className="w-full h-full object-cover"
           />
         </div>
-       
+
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3 }}
@@ -119,7 +119,7 @@ const ProfileMenu = ({ userDetails }) => {
 
       {/* Modal Menu with Glass Morphism */}
       {isOpen && (
-        <ModalPortal giveBg={true} >
+        <ModalPortal giveBg={true}>
           <AnimatePresence>
             <motion.div
               className="fixed left-1/2 transform -translate-x-1/2 w-[95vw] max-w-md bg-white/95 backdrop-blur-md shadow-2xl rounded-3xl z-50 overflow-hidden border border-gray-100 top-10"
@@ -136,17 +136,17 @@ const ProfileMenu = ({ userDetails }) => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
                 >
-                  {activeTab === 'main' ? (
+                  {activeTab === "main" ? (
                     <>
                       <FaUser className="text-indigo-500" />
                       Your Profile
                     </>
-                  ) : activeTab === 'notifications' ? (
+                  ) : activeTab === "notifications" ? (
                     <>
                       <FaBell className="text-indigo-500" />
                       Notifications
                     </>
-                  ) : activeTab === 'messages' ? (
+                  ) : activeTab === "messages" ? (
                     <>
                       <FaCommentAlt className="text-indigo-500" />
                       Messages
@@ -161,7 +161,7 @@ const ProfileMenu = ({ userDetails }) => {
                 <motion.button
                   onClick={() => setIsOpen(false)}
                   className="rounded-full p-2 hover:bg-gray-100 transition-colors"
-                  whileHover={{ rotate: 90, backgroundColor: '#f3f4f6' }}
+                  whileHover={{ rotate: 90, backgroundColor: "#f3f4f6" }}
                   whileTap={{ scale: 0.9 }}
                 >
                   <FaTimes size={18} className="text-gray-500" />
@@ -169,7 +169,7 @@ const ProfileMenu = ({ userDetails }) => {
               </div>
 
               <AnimatePresence mode="wait">
-                {activeTab === 'main' && (
+                {activeTab === "main" && (
                   <motion.div
                     key="main"
                     initial={{ opacity: 0, y: 20 }}
@@ -186,10 +186,12 @@ const ProfileMenu = ({ userDetails }) => {
                         animate={pulseAnimation[animation]}
                       >
                         <div className="w-24 h-24 rounded-full overflow-hidden ring-4 ring-indigo-100">
-                            <Image
-                                      width={200}
-                                      height={200} 
-                            src={userDetails?.profilePicture || "https://i.pravatar.cc/150?img=32"}
+                          <Image
+                            width={200}
+                            height={200}
+                            src={
+                              userDetails?.profilePicture || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                            }
                             alt={userDetails?.fullName || "User"}
                             className="w-full h-full object-cover"
                           />
@@ -198,10 +200,10 @@ const ProfileMenu = ({ userDetails }) => {
                       </motion.div>
 
                       <h3 className="text-xl font-bold text-gray-900">
-                        {userDetails?.fullName || "Alex Johnson"}
+                        {userDetails?.fullName || "user"}
                       </h3>
                       <p className="text-sm text-gray-500">
-                        {userDetails?.email || "alex@example.com"}
+                        {userDetails?.email || "user@gmail.com"}
                       </p>
 
                       {/* <div className="flex justify-center gap-6 mt-4 w-full">
@@ -297,7 +299,10 @@ const ProfileMenu = ({ userDetails }) => {
                           className="w-9 h-9 flex items-center justify-center bg-indigo-100 rounded-xl mr-3 group-hover:bg-indigo-200 transition-colors"
                           whileHover={{ rotate: 10 }}
                         >
-                          <IoSettingsSharp size={16} className="text-indigo-700" />
+                          <IoSettingsSharp
+                            size={16}
+                            className="text-indigo-700"
+                          />
                         </motion.div>
                         <span className="font-medium">Settings</span>
                       </Link>
@@ -307,7 +312,10 @@ const ProfileMenu = ({ userDetails }) => {
                     <motion.button
                       onClick={handleLogout}
                       className="flex w-full items-center justify-center gap-2 mt-6 p-4 bg-gradient-to-r from-red-50 to-red-100 text-red-600 font-medium rounded-xl hover:shadow-md transition-all"
-                      whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(239, 68, 68, 0.2)" }}
+                      whileHover={{
+                        scale: 1.02,
+                        boxShadow: "0 10px 15px -3px rgba(239, 68, 68, 0.2)",
+                      }}
                       whileTap={{ scale: 0.98 }}
                     >
                       <FaSignOutAlt size={18} />
@@ -318,7 +326,9 @@ const ProfileMenu = ({ userDetails }) => {
                     <div className="mt-4 flex items-center justify-center gap-1 text-xs text-gray-400">
                       <FaKeyboard size={14} />
                       <span>+</span>
-                      <span className="px-1.5 py-0.5 bg-gray-100 rounded-md font-mono">/</span>
+                      <span className="px-1.5 py-0.5 bg-gray-100 rounded-md font-mono">
+                        /
+                      </span>
                       <span>to toggle menu</span>
                     </div>
                   </motion.div>
@@ -329,7 +339,7 @@ const ProfileMenu = ({ userDetails }) => {
         </ModalPortal>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ProfileMenu
+export default ProfileMenu;

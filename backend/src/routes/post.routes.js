@@ -30,7 +30,10 @@ router.get('/', getAllPosts);
 router.get('/:id', getPostById);
 
 // Route to edit own post
-router.put('/:postId', fetchUser, editPost);
+router.put('/:postId',multerUpload.fields([
+  { name: 'image', maxCount: 10 },
+
+]),parseBody, fetchUser, editPost);
 
 // Route to delete own post
 router.delete('/:postId', fetchUser, deletePost);

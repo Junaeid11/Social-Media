@@ -37,7 +37,7 @@ const ImageModal = ({ imageUrl, onClose }) => {
           <img
             src={imageUrl}
             alt="Modal Preview"
-            className="max-w-[90vw] max-h-[90vh] rounded-lg"
+            className="max-w-[40vw] max-h-[40vh] rounded-lg"
           />
           <button
             onClick={onClose}

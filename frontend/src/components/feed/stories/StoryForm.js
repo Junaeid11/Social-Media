@@ -94,15 +94,15 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 min-h-[60vh] "
       >
         <motion.div
           initial={{ scale: 0.95, opacity: 0, y: 20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.95, opacity: 0, y: 20 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="bg-white rounded-2xl p-7 w-full max-w-[42rem] shadow-2xl mx-4 border border-gray-100"
-        >
+          className="bg-white rounded-2xl p-4 sm:p-6 lg:p-7 w-full max-w-lg sm:max-w-l lg:max-w-xl shadow-2xl mx-4 border border-gray-100 overflow-y-auto"
+          >
           <div className="flex justify-between items-center mb-7">
             <div className="flex items-center gap-4">
               <motion.div
@@ -153,7 +153,7 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
             </motion.button>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-2">
             <motion.div
               initial={{ y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -181,8 +181,8 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
                 className="relative"
               >
                 <motion.textarea
-                  initial={{ height: "150px" }}
-                  animate={{ height: content.length > 80 ? "180px" : "150px" }}
+                  initial={{ height: "60px" }}
+                  animate={{ height: content.length > 80 ? "100px" : "100px" }}
                   value={content}
                   onChange={handleContentChange}
                   rows={3}
@@ -247,7 +247,7 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
                     </div>
 
                     <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 hover:border-indigo-400 rounded-lg p-6 bg-gray-50 transition-colors duration-200">
-                      <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center mb-3">
+                      <div className="w-14  h-8 bg-indigo-100 rounded-full flex items-center justify-center ">
                         <input
                           type="file"
                           accept="image/*"
@@ -256,7 +256,7 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
                           onChange={(e) => {
                             const file = e.target.files[0];
                             if (file) {
-                              setImage([file]); // wrap in array for reuse below
+                              setImage([file]); 
                               setImageFiles({ image: file });
                               setPreviewImage(URL.createObjectURL(file));
                             }
@@ -342,7 +342,7 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
               whileHover={{ scale: 1.03, backgroundColor: "#4338ca" }}
               whileTap={{ scale: 0.97 }}
               onClick={handleSubmit}
-              disabled={isSubmitting || content.trim() === ""}
+              // disabled={isSubmitting || content.trim() === ""}
               className={`px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-medium transition-all flex items-center gap-2 shadow-md relative overflow-hidden ${
                 isSubmitting || content.trim() === "" ? "opacity-70" : ""
               }`}

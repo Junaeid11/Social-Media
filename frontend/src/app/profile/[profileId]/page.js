@@ -173,7 +173,7 @@ const UserProfile = (props) => {
     <AuthRedirect>
       <div className="min-h-screen bg-[#F5F6FA] flex justify-center p-3">
         <div className="w-full max-w-6xl bg-white rounded-lg shadow-md overflow-hidden">
-          {/* Header section */}
+
           <motion.div
             className="relative h-60 sm:h-80 bg-gray-300"
             initial={{ opacity: 0 }}
@@ -198,13 +198,13 @@ const UserProfile = (props) => {
                   href="/settings"
                   className="px-2 sm:px-4 py-1 sm:py-2 bg-slate-700 text-white rounded-md hover:bg-slate-800 transition duration-300"
                 >
-                  Edit Cover Image
+                  Edit Cover
                 </Link>
                 <Link
                   href="/settings"
                   className="px-2 sm:px-4 py-1 sm:py-2 bg-slate-700 text-white rounded-md hover:bg-slate-800 transition duration-300"
                 >
-                  Edit Profile Picture
+                  Edit Profile
                 </Link>
               </div>
             )}
@@ -225,10 +225,10 @@ const UserProfile = (props) => {
                 }
               />
             </div>
-            <div className="ml-0 sm:ml-56 mt-4 sm:mt-0 mr-4 sm:mr-7 flex-1">
+            <div className="ml-20 sm:ml-56 mt-4 sm:mt-0 mr-4 sm:mr-7 flex-1">
               <div className="ml-2 text-center sm:text-left">
                 <div className="flex items-center gap-2">
-                  <h1 className="text-2xl sm:text-3xl font-bold capitalize">
+                  <h1 className="text-2xl pb-2 text-center sm:text-3xl font-bold capitalize">
                     {user.fullName}
                   </h1>
                   <motion.div

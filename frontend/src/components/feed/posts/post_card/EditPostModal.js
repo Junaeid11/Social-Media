@@ -3,35 +3,65 @@ import { motion, AnimatePresence } from "framer-motion";
 import ModalPortal from "@/components/common/ModalPortal";
 import { useDispatch, useSelector } from "react-redux";
 import { editPost } from "@/redux/posts/postsSlice";
-import { FiX, FiSave, FiEdit2, FiFeather, FiCheck, FiAlertCircle } from "react-icons/fi";
+import {
+  FiX,
+  FiSave,
+  FiEdit2,
+  FiFeather,
+  FiCheck,
+  FiAlertCircle,
+} from "react-icons/fi";
 import { patternStyles } from "@/constants";
+import PostFormImageInput from "./PostFormImageInput";
+import PostFormImagePreview from "./PostFormImagePreview";
+import { MdAddPhotoAlternate, MdClose } from "react-icons/md";
 
 // Edit Post Modal Component
 const EditPostModal = ({ isOpen, onClose, post }) => {
   const dispatch = useDispatch();
   const [editContent, setEditContent] = useState(post.content);
-  const [editBackgroundColor, setEditBackgroundColor] = useState(post.backgroundColor || 'bg-white');
+  const [editBackgroundColor, setEditBackgroundColor] = useState(
+    post.backgroundColor || "bg-white"
+  );
   const { userDetails } = useSelector((state) => state.auth);
   const [charCount, setCharCount] = useState(post.content.length);
   const [isSaving, setIsSaving] = useState(false);
+
+  const [image, setImage] = useState([]);
+
+  const [showImageInput, setShowImageInput] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
   const [showSuccessIndicator, setShowSuccessIndicator] = useState(false);
 
-  // Reset state when modal opens with new post
   useEffect(() => {
     if (isOpen) {
       setEditContent(post.content);
-      setEditBackgroundColor(post.backgroundColor || 'bg-white');
+      setEditBackgroundColor(post.backgroundColor || "bg-white");
       setCharCount(post.content.length);
     }
-  }, [isOpen, post]);
+  }, [isOpen]);
 
   const handleSaveEdit = async (newContent, newBackgroundColor) => {
     setIsSaving(true);
-    await dispatch(editPost({
-      postId: post._id,
+
+    const formData = new FormData();
+    const data = {
       content: newContent,
-      backgroundColor: newBackgroundColor
-    }));
+      backgroundColor: newBackgroundColor,
+    };
+
+    formData.append("data", JSON.stringify(data));
+    image.forEach((file) => {
+      formData.append("image", file);
+    });
+
+    await dispatch(
+      editPost({
+        postId: post._id,
+        formData,
+      })
+    );
+
     setEditContent(newContent);
     setEditBackgroundColor(newBackgroundColor);
     setIsSaving(false);
@@ -72,22 +102,30 @@ const EditPostModal = ({ isOpen, onClose, post }) => {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className={`${editBackgroundColor} rounded-2xl p-7 w-full max-w-[42rem] shadow-2xl mx-4 border border-gray-100`}
-            style={editBackgroundColor?.includes('pattern-') ? patternStyles[editBackgroundColor.split(' ').find(cls => cls.startsWith('pattern-'))] : {}}
+            className={`${editBackgroundColor} rounded-2xl p-7 w-full max-w-[42rem] shadow-2xl mx-4 border border-gray-100 max-h-[calc(100vh-4rem)] overflow-y-auto`}
+            style={
+              editBackgroundColor?.includes("pattern-")
+                ? patternStyles[
+                    editBackgroundColor
+                      .split(" ")
+                      .find((cls) => cls.startsWith("pattern-"))
+                  ]
+                : {}
+            }
           >
             <div className="flex justify-between items-center mb-7">
               <div className="flex items-center gap-4">
-                <motion.div 
+                <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="relative"
                 >
                   <img
                     className="w-16 h-16 object-cover rounded-full shadow-lg ring-3 ring-indigo-100"
-                    src={userDetails?.profilePicture || '/default-avatar.png'}
+                    src={userDetails?.profilePicture || "/default-avatar.png"}
                     alt={userDetails?.fullName}
                   />
-                  <motion.div 
+                  <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.2, type: "spring" }}
@@ -95,7 +133,7 @@ const EditPostModal = ({ isOpen, onClose, post }) => {
                   ></motion.div>
                 </motion.div>
                 <div>
-                  <motion.h3 
+                  <motion.h3
                     initial={{ x: -10, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.1 }}
@@ -103,7 +141,7 @@ const EditPostModal = ({ isOpen, onClose, post }) => {
                   >
                     Edit Post
                   </motion.h3>
-                  <motion.p 
+                  <motion.p
                     initial={{ x: -10, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.2 }}
@@ -134,11 +172,15 @@ const EditPostModal = ({ isOpen, onClose, post }) => {
                     <FiFeather className="text-indigo-500" />
                     Your Thoughts
                   </label>
-                  <span className={`text-sm font-medium px-2 py-0.5 rounded-full ${
-                    charCount > 90 ? 'bg-red-100 text-red-600' : 
-                    charCount > 70 ? 'bg-yellow-100 text-yellow-600' : 
-                    'bg-green-100 text-green-600'
-                  }`}>
+                  <span
+                    className={`text-sm font-medium px-2 py-0.5 rounded-full ${
+                      charCount > 90
+                        ? "bg-red-100 text-red-600"
+                        : charCount > 70
+                        ? "bg-yellow-100 text-yellow-600"
+                        : "bg-green-100 text-green-600"
+                    }`}
+                  >
                     {charCount}/100
                   </span>
                 </div>
@@ -148,7 +190,9 @@ const EditPostModal = ({ isOpen, onClose, post }) => {
                 >
                   <motion.textarea
                     initial={{ height: "150px" }}
-                    animate={{ height: editContent.length > 80 ? "180px" : "150px" }}
+                    animate={{
+                      height: editContent.length > 80 ? "180px" : "150px",
+                    }}
                     value={editContent}
                     onChange={handleContentChange}
                     rows={3}
@@ -156,7 +200,7 @@ const EditPostModal = ({ isOpen, onClose, post }) => {
                     placeholder="Share your thoughts..."
                   />
                   {charCount >= 100 && (
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="absolute right-3 bottom-3 text-red-500 flex items-center gap-1 text-sm bg-white/90 px-2 py-1 rounded-lg"
@@ -168,19 +212,77 @@ const EditPostModal = ({ isOpen, onClose, post }) => {
                 </motion.div>
               </motion.div>
 
+              <div className="flex flex-col space-y-4">
+                {/* Image Input Section */}
+                <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                  <button
+                    onClick={() => setShowImageInput((prev) => !prev)}
+                    className="flex items-center text-indigo-600 text-sm font-semibold gap-2 hover:text-indigo-800 transition-all"
+                    title={
+                      showImageInput ? "Hide Image Input" : "Add/Change Image"
+                    }
+                  >
+                    {showImageInput ? (
+                      <MdClose className="w-5 h-5" />
+                    ) : (
+                      <MdAddPhotoAlternate className="w-5 h-5" />
+                    )}
+                    {showImageInput ? "Hide Image" : "Add/Change Image"}
+                  </button>
+                </div>
+
+                {showImageInput && (
+                  <PostFormImageInput
+                    showImageInput={showImageInput}
+                    setShowImageInput={setShowImageInput}
+                    image={image}
+                    setImage={setImage}
+                  />
+                )}
+
+                {/* Image Preview Section */}
+                <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                  <button
+                    onClick={() => setPreviewImage((prev) => !prev)}
+                    className="flex items-center text-indigo-600 text-sm font-semibold gap-2 hover:text-indigo-800 transition-all"
+                    title={
+                      previewImage ? "Hide Image Preview" : "Show Image Preview"
+                    }
+                  >
+                    {previewImage ? (
+                      <MdClose className="w-5 h-5" />
+                    ) : (
+                      <MdAddPhotoAlternate className="w-5 h-5" />
+                    )}
+                    {previewImage ? "Hide Preview" : "Show Preview"}
+                  </button>
+                </div>
+
+                {previewImage && (
+                  <PostFormImagePreview
+                    previewImage={previewImage}
+                    image={image}
+                    setPreviewImage={setPreviewImage}
+                    setImage={setImage}
+                  />
+                )}
+              </div>
+
               <motion.div
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.4 }}
               >
-                <label className="text-sm font-semibold text-gray-700 mb-3 block">Background Style</label>
+                <label className="text-sm font-semibold text-gray-700 mb-3 block">
+                  Background Style
+                </label>
                 <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mb-4">
                   {[
-                    { value: 'bg-white', label: 'Clean White' },
-                    { value: 'bg-blue-50', label: 'Soft Blue' },
-                    { value: 'bg-purple-50', label: 'Lavender' },
-                    { value: 'bg-green-50', label: 'Mint' },
-                    { value: 'bg-yellow-50', label: 'Warm Yellow' }
+                    { value: "bg-white", label: "Clean White" },
+                    { value: "bg-blue-50", label: "Soft Blue" },
+                    { value: "bg-purple-50", label: "Lavender" },
+                    { value: "bg-green-50", label: "Mint" },
+                    { value: "bg-yellow-50", label: "Warm Yellow" },
                   ].map((option) => (
                     <motion.div
                       key={option.value}
@@ -188,14 +290,14 @@ const EditPostModal = ({ isOpen, onClose, post }) => {
                       whileTap={{ scale: 0.97 }}
                       onClick={() => setEditBackgroundColor(option.value)}
                       className={`cursor-pointer h-12 rounded-lg border-2 ${
-                        editBackgroundColor === option.value 
-                          ? 'border-indigo-500 shadow-md' 
-                          : 'border-gray-200'
+                        editBackgroundColor === option.value
+                          ? "border-indigo-500 shadow-md"
+                          : "border-gray-200"
                       } overflow-hidden relative`}
                     >
                       <div className={getColorPreviewClass(option.value)}></div>
                       {editBackgroundColor === option.value && (
-                        <motion.div 
+                        <motion.div
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
                           className="absolute top-1 right-1 bg-indigo-500 rounded-full p-0.5"
@@ -227,7 +329,7 @@ const EditPostModal = ({ isOpen, onClose, post }) => {
               </motion.div>
             </div>
 
-            <motion.div 
+            <motion.div
               initial={{ y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.5 }}
@@ -247,7 +349,9 @@ const EditPostModal = ({ isOpen, onClose, post }) => {
                 whileTap={{ scale: 0.97 }}
                 onClick={handleSave}
                 disabled={isSaving}
-                className={`px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-medium transition-all flex items-center gap-2 shadow-md relative overflow-hidden ${isSaving ? 'opacity-90' : ''}`}
+                className={`px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-medium transition-all flex items-center gap-2 shadow-md relative overflow-hidden ${
+                  isSaving ? "opacity-90" : ""
+                }`}
               >
                 {showSuccessIndicator ? (
                   <>
@@ -257,11 +361,11 @@ const EditPostModal = ({ isOpen, onClose, post }) => {
                 ) : (
                   <>
                     <FiSave className="w-4 h-4" />
-                    {isSaving ? 'Saving...' : 'Save Changes'}
+                    {isSaving ? "Saving..." : "Save Changes"}
                   </>
                 )}
                 {isSaving && (
-                  <motion.div 
+                  <motion.div
                     initial={{ width: "0%" }}
                     animate={{ width: "100%" }}
                     transition={{ duration: 1 }}

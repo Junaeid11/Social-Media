@@ -72,7 +72,7 @@ const Rightbar = () => {
   return (
     <>
       {isLoggedIn && (
-        <div className="flex">
+        <div className="hidden lg:flex">
           {/* Main Full Rightbar */}
           <div className="w-64 md:block z-20 mr-1 ml-auto">
             <div
@@ -262,18 +262,7 @@ const Rightbar = () => {
               className="mini-sidebar w-20 py-6 px-3 bg-white/95 shadow-sm fixed overflow-y-auto rounded-xl border border-purple-100 flex flex-col items-center gap-6"
               style={{ height: "calc(100vh - 4rem)" }}
             >
-              <motion.div
-                className="bg-gradient-to-r from-purple-500 to-indigo-400 p-3 rounded-xl cursor-pointer relative"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
-                  <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z" />
-                </svg>
-                <span className="absolute -top-1 -right-1 bg-amber-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                  2
-                </span>
-              </motion.div>
+              
 
               <div className="flex flex-col gap-4 items-center">
                 <motion.div

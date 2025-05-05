@@ -11,7 +11,7 @@ import { BsFillPostcardFill } from "react-icons/bs";
 import StorySection from "@/components/feed/stories/StorySection";
 import RunningServer from "@/components/RunningServer";
 import axios from "axios";
-import { ProfilePicVerify } from "@/components";
+// import { ProfilePicVerify } from "@/components";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -46,7 +46,7 @@ export default function Home() {
   return (
     <AuthRedirect>
       <main className="bg-[#d2d2d2] mx-auto p-4 space-y-3 w-full min-h-screen">
-        <ProfilePicVerify />
+        {/* <ProfilePicVerify /> */}
         <StorySection />
         <PostForm />
         {allPosts.length > 0 ? (

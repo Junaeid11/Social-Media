@@ -183,31 +183,43 @@ const PostCard = ({ post }) => {
             ></div>
           )}
         </motion.div>
-
         {Array.isArray(post.image) && post.image.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-            {post.image.map((img, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.1, duration: 0.4 }}
-                className="relative rounded-lg overflow-hidden group"
-              >
-                <img
-                  src={img}
-                  alt={`Post Image ${index + 1}`}
-                  className="w-full rounded-lg object-cover max-h-[24rem] transform transition-transform duration-500 group-hover:scale-105"
-                 
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="absolute z-50 bottom-3 right-3 bg-black/60 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer">
-                  <FiImage className="w-4 h-4"   onClick={() => handleImageClick(img)}/>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        )}
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+    {post.image.slice(0, 2).map((img, index) => {
+      const showOverlay = index === 1 && post.image.length > 2;
+      return (
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: index * 0.1, duration: 0.4 }}
+          className="relative rounded-lg overflow-hidden group cursor-pointer"
+          onClick={() =>
+            showOverlay
+              ? handleImageClick(post.image[2]) // show 3rd image (or gallery if you want)
+              : handleImageClick(img)
+          }
+        >
+          <img
+            src={img}
+            alt={`Post Image ${index + 1}`}
+            className="w-full h-full object-cover max-h-[24rem] rounded-lg transition-transform duration-500 group-hover:scale-105"
+          />
+
+          {showOverlay && (
+            <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-4xl font-bold z-10">
+              +{post.image.length - 2}
+            </div>
+          )}
+        </motion.div>
+      );
+    })}
+  </div>
+)}
+
+
+
+
         {modalOpen && typeof window !== "undefined" && (
           <ImageModal
             imageUrl={modalImage}

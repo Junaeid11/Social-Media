@@ -126,36 +126,59 @@ export const getPostById = asyncHandler(async (req, res, next) => {
 
 // Edit own post
 export const editPost = asyncHandler(async (req, res, next) => {
-  const userId = req.user.id;
-  const { postId } = req.params;
-  const { content, image, backgroundColor } = req.body;
+  try {
+    const userId = req.user.id;
+    const postId = req.params.postId;
+    const { content, backgroundColor, pollData, feeling } = req.body;
 
-  // Find the post and ensure it belongs to the logged-in user
-  const post = await Post.findOne({ _id: postId, user: userId });
-  if (!post) {
-    return next(
-      new ApiError(
-        404,
-        "Post not found or you are not authorized to edit this post"
-      )
-    );
+    const post = await Post.findById(postId);
+    if (!post) {
+      return next(new ApiError(404, "Post not found"));
+    }
+
+    // Ensure only the owner can update
+    if (post.user.toString() !== userId) {
+      return next(new ApiError(403, "You are not authorized to update this post"));
+    }
+
+    // Update basic fields
+    if (content) post.content = content;
+    if (feeling) post.feeling = feeling;
+    if (backgroundColor) post.backgroundColor = backgroundColor;
+
+    // Update images if new ones are uploaded
+    if (req.files?.image?.length) {
+      post.image = req.files.image.map((file) => file.path);
+    }
+
+    // Update poll if provided
+    if (pollData && pollData.options && pollData.options.length >= 2) {
+      const pollOptions = pollData.options.map((option) => ({
+        text: option,
+        votes: [],
+      }));
+      const endDate = new Date();
+      endDate.setHours(endDate.getHours() + (pollData.duration || 24));
+      post.poll = {
+        options: pollOptions,
+        endDate,
+        active: true,
+      };
+    }
+
+    await post.save();
+
+    const updatedPost = await Post.findById(post._id)
+      .populate("user", "fullName profilePicture username")
+      .populate("likes", "fullName")
+      .populate("poll.options.votes", "fullName username profilePicture")
+      .lean();
+
+    res.status(200).json(new ApiResponse(200, "Post updated successfully", updatedPost));
+  } catch (error) {
+    console.error("Post update error:", error);
+    next(new ApiError(500, "Failed to update post"));
   }
-
-  // Update the post
-  post.content = content || post.content;
-  post.image = image || post.image;
-  post.backgroundColor = backgroundColor || post.backgroundColor;
-  await post.save();
-
-  const populatedPost = await Post.findById(post._id)
-    .populate("user", "fullName profilePicture username")
-    .populate("likes", "fullName")
-    .populate("poll.options.votes", "fullName username profilePicture")
-    .lean();
-
-  res
-    .status(200)
-    .json(new ApiResponse(200, "Post updated successfully", populatedPost));
 });
 
 // Delete own post

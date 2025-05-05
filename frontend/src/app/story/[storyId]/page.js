@@ -22,7 +22,7 @@ import AuthRedirect from "@/components/AuthRedirect";
 import { Loading } from "@/components";
 import Image from "next/image";
 
-import logo from './../../../components/logo2.png'
+import logo from "./../../../components/logo2.png";
 
 const Page = (props) => {
   const params = use(props.params);
@@ -69,7 +69,8 @@ const Page = (props) => {
   const handlePrevStory = () => {
     if (storyToShow && storyToShow.user) {
       const userStories = groupedStories[storyToShow.user._id]?.stories || [];
-      const prevStoryIndex = (currentStoryIndex - 1 + userStories.length) % userStories.length;
+      const prevStoryIndex =
+        (currentStoryIndex - 1 + userStories.length) % userStories.length;
       setStoryToShow(userStories[prevStoryIndex]);
       setCurrentStoryIndex(prevStoryIndex);
       setProgress(0); // Reset progress
@@ -77,19 +78,36 @@ const Page = (props) => {
   };
 
   // Group stories by user
-  const groupedStories = stories.reduce((acc, story) => {
-    const userId = story.user._id;
-    if (!acc[userId]) {
-      acc[userId] = {
-        user: story.user,
-        stories: [],
-      };
-    }
-    acc[userId].stories.push(story);
-    return acc;
-  }, {});
+// Group and filter stories from the last 24 hours
+const groupedStories = Object.fromEntries(
+  Object.entries(
+    stories.reduce((acc, story) => {
+      const userId = story.user._id;
+      if (!acc[userId]) {
+        acc[userId] = {
+          user: story.user,
+          stories: [],
+        };
+      }
+      acc[userId].stories.push(story);
+      return acc;
+    }, {})
+  )
+    .map(([userId, group]) => {
+      const recentStories = group.stories.filter((story) => {
+        const createdAt = new Date(story.createdAt);
+        const now = new Date();
+        const hoursDiff = (now - createdAt) / (1000 * 60 * 60);
+        return hoursDiff <= 24;
+      });
+      return [userId, { ...group, stories: recentStories }];
+    })
+    .filter(([_, group]) => group.stories.length > 0)
+);
 
-  const users = Object.values(groupedStories);
+
+const users = Object.values(groupedStories);
+
 
   useEffect(() => {
     if (stories.length > 0 && storyId) {
@@ -153,8 +171,6 @@ const Page = (props) => {
     }
   }, [isPlaying, currentStoryIndex]);
 
-
-
   // Handle play/pause button
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -200,7 +216,6 @@ const Page = (props) => {
       <div className="bg-gradient-to-br from-indigo-50 to-purple-50 flex flex-col-reverse lg:flex-row items-center justify-between min-h-screen fixed h-full w-screen z-50 inset-0 lg:overflow-hidden overflow-y-auto">
         <StoryForm isOpen={isModalOpen} onClose={closeModal} />
 
-        {/* Back Home Button */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -233,36 +248,33 @@ const Page = (props) => {
                 <AiOutlineClose className="text-indigo-600 w-6 h-6" />
               </motion.div>
             </Link>
-            <Link href='/'>
-              <div
-              className="flex items-center group cursor-pointer"
-            >
-              <motion.div
-                whileHover={{ scale: 1.2, rotate: 10 }}
-                whileTap={{ scale: 0.9 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                className="relative"
-              >
-                <Image src={logo} width={50} height={200} alt="LOLfeed" />
+            <Link href="/">
+              <div className="flex items-center group cursor-pointer">
                 <motion.div
-                  className="absolute inset-0 bg-indigo-400/20 rounded-lg blur-md"
-                  animate={{
-                    scale: [1, 1.2, 1],
-                    opacity: [0.7, 0.4, 0.7],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    repeatType: "reverse",
-                  }}
-                />
-              </motion.div>
-              <span className="font-bold text-lg bg-gradient-to-r from-red-600 to-red-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-red-600 transition-all duration-500">
-                LOLfeed
-              </span>
-            </div>
+                  whileHover={{ scale: 1.2, rotate: 10 }}
+                  whileTap={{ scale: 0.9 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  className="relative"
+                >
+                  <Image src={logo} width={50} height={200} alt="LOLfeed" />
+                  <motion.div
+                    className="absolute inset-0 bg-indigo-400/20 rounded-lg blur-md"
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      opacity: [0.7, 0.4, 0.7],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      repeatType: "reverse",
+                    }}
+                  />
+                </motion.div>
+                <span className="font-bold text-lg bg-gradient-to-r from-red-600 to-red-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-red-600 transition-all duration-500">
+                  LOLfeed
+                </span>
+              </div>
             </Link>
-          
           </div>
 
           <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">
@@ -364,71 +376,26 @@ const Page = (props) => {
             className="w-full lg:w-[36rem] h-screen bg-slate-800 shadow-2xl rounded-none lg:rounded-r-2xl relative flex flex-col justify-between items-center px-4 pb-8 pt-4 bg-cover bg-center overflow-hidden"
             style={{ backgroundImage: `url(${storyToShow?.image})` }}
           >
-             <motion.button
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        onClick={handlePrevStory}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/80 backdrop-blur-md rounded-full shadow-lg hover:bg-indigo-600 hover:text-white transition-all duration-300 z-10"
-      >
-        <MdChevronLeft className="text-indigo-600 hover:text-white w-8 h-8" />
-      </motion.button>
-
-      {/* Previous Button */}
-      <motion.button
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        onClick={handleNextStory}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/80 backdrop-blur-md rounded-full shadow-lg hover:bg-indigo-600 hover:text-white transition-all duration-300 z-10"
-      >
-        <MdOutlineChevronRight className="text-indigo-600 hover:text-white w-8 h-8" />
-      </motion.button>
-            {/* Overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30 z-0"></div>
-
-            {/* Story Header */}
-            <motion.div
-              initial={{ y: -50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="relative z-10 w-full"
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={handlePrevStory}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/80 backdrop-blur-md rounded-full shadow-lg hover:bg-indigo-600 hover:text-white transition-all duration-300 z-10"
             >
-              <Link
-                href={`/profile/${storyToShow?.user?._id}`}
-                className="flex items-center bg-white/90 backdrop-blur-md py-3 px-4 rounded-xl shadow-lg mx-auto max-w-md"
-              >
-                <motion.img
-                  whileHover={{ scale: 1.1 }}
-                  src={storyToShow?.user.profilePicture}
-                  alt={storyToShow?.user.fullName}
-                  className="w-10 h-10 rounded-full mr-4 object-cover border-2 border-indigo-400"
-                />
-                <div>
-                  <h3 className="font-semibold text-lg text-gray-900">
-                    {storyToShow?.user.fullName}
-                  </h3>
-                  <p className="text-indigo-500 text-sm font-medium">
-                    {timePassed(storyToShow?.createdAt)}
-                  </p>
-                </div>
+              <MdChevronLeft className="text-indigo-600 hover:text-white w-8 h-8" />
+            </motion.button>
 
-                {/* Play/Pause Button */}
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="ml-auto bg-indigo-100 p-2 rounded-full text-indigo-600"
-                  onClick={handlePlayPause}
-                >
-                  {isPlaying ? (
-                    <AiOutlinePauseCircle className="w-6 h-6" />
-                  ) : (
-                    <AiOutlinePlayCircle className="w-6 h-6" />
-                  )}
-                </motion.button>
-              </Link>
-            </motion.div>
-
-            {/* Progress bar */}
-            <div className="w-full h-1 relative flex space-x-1 z-10 mt-4">
+            {/* Previous Button */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={handleNextStory}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 bg-white/80 backdrop-blur-md rounded-full shadow-lg hover:bg-indigo-600 hover:text-white transition-all duration-300 z-10"
+            >
+              <MdOutlineChevronRight className="text-indigo-600 hover:text-white w-8 h-8" />
+            </motion.button>
+              {/* Progress bar */}
+              <div className="w-full h-1 relative flex space-x-1 z-10 mt-4">
               {groupedStories[storyToShow.user._id].stories.map(
                 (story, index) => (
                   <motion.div
@@ -458,6 +425,58 @@ const Page = (props) => {
                 )
               )}
             </div>
+            {/* Overlay gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30 z-0"></div>
+
+            {/* Story Header */}
+            <motion.div
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="relative z-10 w-full"
+            >
+              <div className="flex items-center bg-white/10 px-2 backdrop-blur-md py-3  rounded-xl shadow-lg mx-auto ">
+                <Link
+                  href={`/profile/${storyToShow?.user?._id}`}
+                  className="flex items-center flex-grow"
+                >
+                  <motion.img
+                    whileHover={{ scale: 1.1 }}
+                    src={storyToShow?.user.profilePicture}
+                    alt={storyToShow?.user.fullName}
+                    className="w-10 h-10 rounded-full mr-4 object-cover border-2 border-indigo-400"
+                  />
+                  <div>
+                    <h3 className="font-semibold text-lg text-white">
+                      {storyToShow?.user.fullName}
+                    </h3>
+                    <p className="text-indigo-500 text-sm font-medium">
+                      {timePassed(storyToShow?.createdAt)}
+                    </p>
+                  </div>
+                </Link>
+
+                {/* Play/Pause Button OUTSIDE the Link */}
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="ml-auto bg-indigo-100 p-2 rounded-full text-indigo-600"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent bubbling just in case
+                    e.preventDefault(); // Prevent navigation if accidentally nested
+                    handlePlayPause();
+                  }}
+                >
+                  {isPlaying ? (
+                    <AiOutlinePauseCircle className="w-6 h-6" />
+                  ) : (
+                    <AiOutlinePlayCircle className="w-6 h-6" />
+                  )}
+                </motion.button>
+              </div>
+            </motion.div>
+
+          
 
             {/* Story Content */}
             <motion.div
@@ -466,7 +485,7 @@ const Page = (props) => {
               transition={{ duration: 0.6 }}
               className="relative z-10 w-full max-w-md mx-auto mt-auto mb-4"
             >
-              <div className="bg-white/90 backdrop-blur-md text-gray-800 py-4 px-6 rounded-xl shadow-lg">
+              <div className="bg-white/10 backdrop-blur-md text-white py-4 px-6 rounded-xl shadow-lg text-center">
                 <p className="text-lg font-medium">{storyToShow?.content}</p>
               </div>
             </motion.div>
@@ -498,7 +517,6 @@ const Page = (props) => {
               </motion.button>
             )}
           </div>
-         
         </motion.div>
       </div>
     </AuthRedirect>

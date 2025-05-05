@@ -353,10 +353,9 @@ const Notification = () => {
                             className={`w-12 h-12 rounded-full ${!notification.isRead ? 'bg-gradient-to-r from-indigo-500 to-purple-500 p-0.5' : 'border-2 border-gray-200'}`}
                           >
                             <div className="h-full w-full bg-white rounded-full overflow-hidden">
-                                <Image
-                                          width={200}
-                                          height={200} 
-                                src={notification.senderUser.profilePicture} 
+                                <img
+                               
+                                src={notification.senderUser.profilePicture || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"} 
                                 className='h-full w-full object-cover rounded-full' 
                                 alt={notification.senderUser.name || "User"} 
                               />
