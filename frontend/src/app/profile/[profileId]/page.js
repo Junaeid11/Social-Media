@@ -36,6 +36,7 @@ import { Loading } from "@/components";
 import { FaCheckCircle } from "react-icons/fa";
 import Image from "next/image";
 import ImageModal from "@/components/common/Image/ImageModel";
+import logo from "../../../components/varification.png";
 
 const UserProfile = (props) => {
   const params = use(props.params);
@@ -185,8 +186,11 @@ const UserProfile = (props) => {
               src={user.coverImage || "https://via.placeholder.com/150"}
               alt="Cover"
               className="w-full h-full object-cover"
-              
-              onClick={() => handleImageClick(user.coverImage || "https://via.placeholder.com/150")}
+              onClick={() =>
+                handleImageClick(
+                  user.coverImage || "https://via.placeholder.com/150"
+                )
+              }
             />
             {loggedInUserId === user._id && (
               <div className="absolute bottom-4 right-4 flex space-x-2">
@@ -214,20 +218,36 @@ const UserProfile = (props) => {
                 src={user.profilePicture || "https://via.placeholder.com/150"}
                 alt={user.fullName}
                 className="w-36 h-36 sm:w-52 sm:h-52 rounded-full border-4 border-white shadow-lg hover:scale-105 transition-transform object-cover"
-                onClick={() => handleImageClick(user.profilePicture || "https://via.placeholder.com/150")}
+                onClick={() =>
+                  handleImageClick(
+                    user.profilePicture || "https://via.placeholder.com/150"
+                  )
+                }
               />
             </div>
             <div className="ml-0 sm:ml-56 mt-4 sm:mt-0 mr-4 sm:mr-7 flex-1">
               <div className="ml-2 text-center sm:text-left">
-                <div className="flex center">
-                  <div>
-                    <h1 className="text-2xl sm:text-3xl HelvB capitalize">
-                      {user.fullName}
-                    </h1>
-                  </div>
-                  <FaCheckCircle className="text-green-500" title="Verified" />
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl sm:text-3xl font-bold capitalize">
+                    {user.fullName}
+                  </h1>
+                  <motion.div
+                    animate={{ y: [0, -5, 0] }}
+                    transition={{
+                      duration: 1.2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <Image
+                      src={logo}
+                      alt="verified"
+                      height={24}
+                      width={30}
+                      className="ml-2"
+                    />
+                  </motion.div>
                 </div>
-
                 <h1 className="text-sm sm:text-lg HelvR">@{user.username}</h1>
                 <p className="text-sm sm:text-base HelvR text-gray-800">
                   {user.bio}
@@ -308,10 +328,7 @@ const UserProfile = (props) => {
         </div>
       </div>
       {modalOpen && (
-        <ImageModal
-          imageUrl={modalImage}
-          onClose={() => setModalOpen(false)}
-        />
+        <ImageModal imageUrl={modalImage} onClose={() => setModalOpen(false)} />
       )}
     </AuthRedirect>
   );

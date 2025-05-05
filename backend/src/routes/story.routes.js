@@ -7,11 +7,15 @@ import {
   autoDeleteStories,
   getAllStories,
 } from '../controllers/story.controllers.js';
+import { multerUpload } from '../config/multer.config.js';
+import { parseBody } from '../middleware/bodyParser.js';
 
 const router = express.Router();
 
 // Route to create a story
-router.post('/create', fetchUser, createStory);
+router.post('/create',multerUpload.fields([
+  { name: 'image', maxCount: 1 },
+]),parseBody,  fetchUser, createStory);
 
 // Route to delete a story
 router.delete('/:storyId', fetchUser, deleteStory);

@@ -3,24 +3,26 @@ import { Story } from '../models/story.model.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
+import { User } from '../models/user.model.js';
 
 // Create a story
 export const createStory = asyncHandler(async (req, res, next) => {
-  const { content, image } = req.body;
+  const { content } = req.body;
   const userId = req.user.id;
+    const user = await User.findById(userId);
 
-  // Validate the content length
   if (content && content.length > 100) {
     return next(new ApiError(400, 'Content exceeds 100 characters limit'));
   }
+  const imagePath = req.files?.image?.[0]?.path || null;
 
-  // Create the story
+
   const story = await Story.create({
     user: userId,
     content,
-    image,
+    image: imagePath,
   });
-
+  
   const populateStory = await Story.findById(story._id)
   .populate('user', 'fullName profilePicture');
 

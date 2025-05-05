@@ -4,27 +4,34 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { createStory } from "@/redux/story/storySlice";
 import Link from "next/link";
-import { 
-  FiX, 
-  FiSave, 
-  FiImage, 
-  FiFeather, 
-  FiCheck, 
-  FiAlertCircle, 
-  FiArrowLeft, 
-  FiLink
+import {
+  FiX,
+  FiSave,
+  FiImage,
+  FiFeather,
+  FiCheck,
+  FiAlertCircle,
+  FiArrowLeft,
+  FiLink,
 } from "react-icons/fi";
 import Image from "next/image";
+import {
+  AiOutlineCamera,
+  AiOutlineCloseCircle,
+  AiOutlineUpload,
+} from "react-icons/ai";
 
 const StoryForm = ({ isOpen, onClose, storyToast }) => {
   const dispatch = useDispatch();
   const [content, setContent] = useState("");
-  const [image, setImage] = useState("");
   const [showImageInput, setShowImageInput] = useState(true);
   const [charCount, setCharCount] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessIndicator, setShowSuccessIndicator] = useState(false);
-  
+  const [image, setImage] = useState([]); // was "" -> now an array
+  const [previewImage, setPreviewImage] = useState(""); // new
+  const [imageFiles, setImageFiles] = useState({ image: null }); // new
+
   const { isLoading, error } = useSelector((state) => state.story);
   const { userDetails } = useSelector((state) => state.auth);
 
@@ -41,11 +48,19 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    const postData = {
+      content,
+      image: previewImage || "", // fallback if no preview
+    };
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(postData));
 
-    // Dispatch the createStory action
-    const resultAction = await dispatch(createStory({ content, image }));
+    if (imageFiles.image) {
+      formData.append("image", imageFiles.image);
+    }
+    console.log(formData);
+    const resultAction = await dispatch(createStory(formData));
 
-    // Check if the story was successfully posted
     if (createStory.fulfilled.match(resultAction)) {
       setShowSuccessIndicator(true);
       setTimeout(() => {
@@ -53,11 +68,11 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
         onClose();
       }, 1200);
       storyToast("success");
-    } else if (createStory.rejected.match(resultAction)) {
+    } else {
       storyToast("error");
       setIsSubmitting(false);
     }
-  };
+  }
 
   const handleContentChange = (e) => {
     const text = e.target.value;
@@ -90,19 +105,19 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
         >
           <div className="flex justify-between items-center mb-7">
             <div className="flex items-center gap-4">
-              <motion.div 
+              <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="relative"
               >
-                  <Image
-                            width={200}
-                            height={200} 
+                <Image
+                  width={200}
+                  height={200}
                   className="w-16 h-16 object-cover rounded-full shadow-lg ring-3 ring-indigo-100"
-                  src={userDetails?.profilePicture || '/default-avatar.png'}
+                  src={userDetails?.profilePicture || "/default-avatar.png"}
                   alt={userDetails?.fullName}
                 />
-                <motion.div 
+                <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.2, type: "spring" }}
@@ -110,7 +125,7 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
                 ></motion.div>
               </motion.div>
               <div>
-                <motion.h3 
+                <motion.h3
                   initial={{ x: -10, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.1 }}
@@ -118,7 +133,7 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
                 >
                   Create Story
                 </motion.h3>
-                <motion.p 
+                <motion.p
                   initial={{ x: -10, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.2 }}
@@ -149,11 +164,15 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
                   <FiFeather className="text-indigo-500" />
                   Your Story
                 </label>
-                <span className={`text-sm font-medium px-2 py-0.5 rounded-full ${
-                  charCount > 90 ? 'bg-red-100 text-red-600' : 
-                  charCount > 70 ? 'bg-yellow-100 text-yellow-600' : 
-                  'bg-green-100 text-green-600'
-                }`}>
+                <span
+                  className={`text-sm font-medium px-2 py-0.5 rounded-full ${
+                    charCount > 90
+                      ? "bg-red-100 text-red-600"
+                      : charCount > 70
+                      ? "bg-yellow-100 text-yellow-600"
+                      : "bg-green-100 text-green-600"
+                  }`}
+                >
                   {charCount}/100
                 </span>
               </div>
@@ -171,7 +190,7 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
                   placeholder="Write your story here..."
                 />
                 {charCount >= 100 && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="absolute right-3 bottom-3 text-red-500 flex items-center gap-1 text-sm bg-white/90 px-2 py-1 rounded-lg"
@@ -203,60 +222,91 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
                   <span>{showImageInput ? "Remove Image" : "Add Image"}</span>
                 </motion.button>
               </div>
-              
+
               <AnimatePresence>
                 {showImageInput && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
+                  <div
+                    className="mt-4 p-4 bg-white rounded-lg shadow-md border border-gray-200 transition-all duration-300"
+                    style={{
+                      animation: "slideIn 0.3s ease-out forwards",
+                    }}
                   >
-                    <div className="relative">
-                      <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                        <FiLink size={16} />
-                      </div>
-                      <input
-                        type="text"
-                        placeholder="Enter image URL..."
-                        className="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-gray-700 shadow-sm"
-                        value={image}
-                        onChange={(e) => setImage(e.target.value)}
-                        maxLength={300}
-                      />
-                      {image && (
-                        <motion.button
-                          whileHover={{ scale: 1.1, rotate: 90 }}
-                          whileTap={{ scale: 0.9 }}
-                          onClick={handleClearImage}
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                        >
-                          <FiX size={16} />
-                        </motion.button>
-                      )}
-                    </div>
-                    
-                    {image && (
-                      <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mt-3 rounded-xl overflow-hidden border border-gray-200 h-32 bg-gray-50"
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="font-semibold text-gray-800 flex items-center gap-2">
+                        <AiOutlineCamera className="text-indigo-500 w-5 h-5" />
+                        Add a photo
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setShowImageInput(false)}
+                        className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-100"
+                        aria-label="Close image input"
                       >
-                          <Image
-                                    width={200}
-                                    height={200} 
-                          src={image}
-                          alt="Story preview"
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = 'https://via.placeholder.com/400x200?text=Invalid+Image+URL';
+                        <AiOutlineCloseCircle className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 hover:border-indigo-400 rounded-lg p-6 bg-gray-50 transition-colors duration-200">
+                      <div className="w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center mb-3">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          id="imageUploadInput"
+                          onChange={(e) => {
+                            const file = e.target.files[0];
+                            if (file) {
+                              setImage([file]); // wrap in array for reuse below
+                              setImageFiles({ image: file });
+                              setPreviewImage(URL.createObjectURL(file));
+                            }
                           }}
                         />
-                      </motion.div>
-                    )}
-                  </motion.div>
+
+                        <label
+                          htmlFor="imageUploadInput"
+                          className="cursor-pointer w-14 h-14 bg-indigo-100 rounded-full flex items-center justify-center mb-3"
+                        >
+                          <AiOutlineUpload className="w-7 h-7 text-indigo-500" />
+                        </label>
+                      </div>
+                    </div>
+
+                    <style jsx>{`
+                      @keyframes slideIn {
+                        from {
+                          opacity: 0;
+                          transform: translateY(-10px);
+                        }
+                        to {
+                          opacity: 1;
+                          transform: translateY(0);
+                        }
+                      }
+                    `}</style>
+                  </div>
+                )}
+                {previewImage && (
+                  <div className="mt-3 relative rounded-lg overflow-hidden border border-gray-200">
+                    <Image
+                      width={200}
+                      height={200}
+                      src={previewImage}
+                      alt="Selected"
+                      className="w-32 h-32 object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImage([]);
+                        setImageFiles({ image: null });
+                        setPreviewImage("");
+                      }}
+                      className="absolute top-2 right-2 bg-gray-800 bg-opacity-60 text-white rounded-full p-1 hover:bg-opacity-80 transition duration-200"
+                    >
+                      <AiOutlineCloseCircle className="w-5 h-5" />
+                    </button>
+                  </div>
                 )}
               </AnimatePresence>
             </motion.div>
@@ -273,7 +323,7 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
             </motion.div>
           )}
 
-          <motion.div 
+          <motion.div
             initial={{ y: 10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5 }}
@@ -294,7 +344,7 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
               onClick={handleSubmit}
               disabled={isSubmitting || content.trim() === ""}
               className={`px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-medium transition-all flex items-center gap-2 shadow-md relative overflow-hidden ${
-                isSubmitting || content.trim() === "" ? 'opacity-70' : ''
+                isSubmitting || content.trim() === "" ? "opacity-70" : ""
               }`}
             >
               {showSuccessIndicator ? (
@@ -305,11 +355,11 @@ const StoryForm = ({ isOpen, onClose, storyToast }) => {
               ) : (
                 <>
                   <FiSave className="w-4 h-4" />
-                  {isSubmitting ? 'Posting...' : 'Post Story'}
+                  {isSubmitting ? "Posting..." : "Post Story"}
                 </>
               )}
               {isSubmitting && (
-                <motion.div 
+                <motion.div
                   initial={{ width: "0%" }}
                   animate={{ width: "100%" }}
                   transition={{ duration: 1 }}

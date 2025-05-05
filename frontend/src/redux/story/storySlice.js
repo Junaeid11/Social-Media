@@ -4,9 +4,9 @@ import axiosInstance from '@/api/axiosInstance';
 // Thunk for creating a story
 export const createStory = createAsyncThunk(
   'stories/createStory',
-  async ({ content, image }, { rejectWithValue }) => {
+  async (formData, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post('/story/create', { content, image });
+      const response = await axiosInstance.post('/story/create', formData);
       return response.data; // Return the created story
     } catch (error) {
       return rejectWithValue(error.response.data.message || 'Error creating story');

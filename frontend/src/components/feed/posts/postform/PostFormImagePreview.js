@@ -22,7 +22,6 @@ const PostFormImagePreview = ({ previewImage, image, setPreviewImage, setImage }
             <button
               type="button"
               onClick={() => {
-                // Remove the image from the preview list
                 const updatedImages = image.filter((_, i) => i !== index);
                 setImage(updatedImages);
               }}
