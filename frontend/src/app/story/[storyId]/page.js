@@ -208,8 +208,30 @@ const users = Object.values(groupedStories);
   };
 
   if (!storyToShow) {
+    if (stories.length === 0) {
+      return (
+        <AuthRedirect>
+          <div className="flex items-center justify-center h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
+            <div className="text-center p-8 rounded-xl shadow-xl bg-white/80 backdrop-blur-md">
+              <h2 className="text-2xl font-bold text-indigo-600 mb-4">No Stories Yet</h2>
+              <p className="text-gray-600 mb-6">
+                Be the first to share something awesome with your friends!
+              </p>
+              <button
+                onClick={openModal}
+                className="bg-indigo-600 text-white px-5 py-2 rounded-full hover:bg-indigo-700 transition"
+              >
+                Create a Story
+              </button>
+            </div>
+          </div>
+        </AuthRedirect>
+      );
+    }
+  
     return <Loading />;
   }
+  
 
   return (
     <AuthRedirect>

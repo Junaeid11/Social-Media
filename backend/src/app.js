@@ -14,7 +14,6 @@ app.use(express.urlencoded({limit: "16kb", extended: true}))
 app.use(express.static("public"))
 app.use(cookieParser())
 
-// Default route to test if the server is running
 app.get("/", (req, res) => {
   res.send("Server is running!");
 });

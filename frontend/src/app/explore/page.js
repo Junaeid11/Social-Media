@@ -71,16 +71,7 @@ const Explore = () => {
           </motion.div>
         )}
 
-        {status === "failed" && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="bg-red-50 p-4 rounded-lg border border-red-200"
-          >
-            <p className="text-red-600 font-medium">Error: {error}</p>
-          </motion.div>
-        )}
-
+       
         {posts && posts.length > 0 ? (
             <PostList posts={posts} />
         ) : (

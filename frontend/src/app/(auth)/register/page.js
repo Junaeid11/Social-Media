@@ -23,6 +23,9 @@ import {
   HiOutlineSparkles,
   HiOutlineHeart
 } from "react-icons/hi";
+import Image from "next/image";
+
+import logo from "./../../../components/logo2.png";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -246,7 +249,7 @@ export default function SignupForm() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={nextStep}
-                className="w-full py-4 bg-gradient-to-r from-blue-500 to-violet-500 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none transition-all"
+                className="w-full py-4 bg-gradient-to-r from-red-500 to-violet-500 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none transition-all"
               >
                 Continue
               </motion.button>
@@ -306,7 +309,7 @@ export default function SignupForm() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={nextStep}
-                className="w-2/3 py-4 bg-gradient-to-r from-blue-500 to-violet-500 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none transition-all"
+                className="w-2/3 py-4 bg-gradient-to-r from-red-500 to-red-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none transition-all"
               >
                 Continue
               </motion.button>
@@ -426,7 +429,7 @@ export default function SignupForm() {
                 onMouseLeave={() => setIsButtonHovered(false)}
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="w-2/3 py-4 flex items-center justify-center bg-gradient-to-r from-blue-500 to-violet-500 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none transition-all relative overflow-hidden"
+                className="w-2/3 py-4 flex items-center justify-center bg-gradient-to-r from-red-500 to-violet-500 text-white font-medium rounded-lg shadow-md hover:shadow-lg focus:outline-none transition-all relative overflow-hidden"
               >
                 {isSubmitting ? (
                   <span className="flex items-center">
@@ -475,14 +478,33 @@ export default function SignupForm() {
           <div className="absolute bottom-1/3 left-1/5 w-20 h-20 bg-violet-300 bg-opacity-20 rounded-full backdrop-blur-xl animate-float-fast"></div>
 
           <div className="px-8 pt-12 md:pt-24 text-gray-800 relative z-10">
-            <Link href="/" className="inline-block mb-12">
-              <div className="flex items-center space-x-2">
-                <div className="h-10 w-10 bg-blue-500 bg-opacity-20 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                  <div className="h-6 w-6 bg-blue-500 rounded-md"></div>
-                </div>
-                <span className="text-2xl font-bold text-blue-600">Connect</span>
-              </div>
-            </Link>
+              <div
+                            className="flex items-center group cursor-pointer"
+                          >
+                            <motion.div
+                              whileHover={{ scale: 1.2, rotate: 10 }}
+                              whileTap={{ scale: 0.9 }}
+                              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                              className="relative"
+                            >
+                              <Image src={logo} width={100} height={200} alt="LOLfeed" />
+                              <motion.div
+                                className="absolute inset-0 bg-indigo-400/20 rounded-lg blur-md"
+                                animate={{
+                                  scale: [1, 1.2, 1],
+                                  opacity: [0.7, 0.4, 0.7],
+                                }}
+                                transition={{
+                                  duration: 2,
+                                  repeat: Infinity,
+                                  repeatType: "reverse",
+                                }}
+                              />
+                            </motion.div>
+                            <span className="font-bold text-2xl bg-gradient-to-r from-red-600 to-red-600 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-red-600 transition-all duration-500">
+                              LOLfeed
+                            </span>
+                          </div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -568,7 +590,7 @@ export default function SignupForm() {
               </div>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-gray-200">
+            {/* <div className="mt-8 pt-6 border-t border-gray-200">
               <div className="flex items-center justify-center space-x-6 mb-6">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -610,7 +632,7 @@ export default function SignupForm() {
                   Privacy Policy
                 </Link>
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

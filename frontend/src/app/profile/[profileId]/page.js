@@ -173,7 +173,6 @@ const UserProfile = (props) => {
     <AuthRedirect>
       <div className="min-h-screen bg-[#F5F6FA] flex justify-center p-3">
         <div className="w-full max-w-6xl bg-white rounded-lg shadow-md overflow-hidden">
-
           <motion.div
             className="relative h-60 sm:h-80 bg-gray-300"
             initial={{ opacity: 0 }}
@@ -210,25 +209,32 @@ const UserProfile = (props) => {
             )}
           </motion.div>
 
-          <motion.div className="relative px-4 pt-12 pb-6 flex flex-col sm:flex-row items-center sm:items-start sm:pb-12">
-            <div className="absolute -top-16 sm:-top-24 left-6">
+          <motion.div className="relative px-4 pt-20 pb-6 sm:pt-24 flex flex-col sm:flex-row items-center sm:items-start sm:pb-12">
+            {/* Profile Picture */}
+            <div className="absolute -top-16 sm:-top-24 left-1/2 sm:left-6 transform -translate-x-1/2 sm:translate-x-0">
               <Image
                 height={200}
                 width={200}
-                src={user.profilePicture || "https://via.placeholder.com/150"}
+                src={
+                  user.profilePicture ||
+                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                }
                 alt={user.fullName}
                 className="w-36 h-36 sm:w-52 sm:h-52 rounded-full border-4 border-white shadow-lg hover:scale-105 transition-transform object-cover"
                 onClick={() =>
                   handleImageClick(
-                    user.profilePicture || "https://via.placeholder.com/150"
+                    user.profilePicture ||
+                      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
                   )
                 }
               />
             </div>
-            <div className="ml-20 sm:ml-56 mt-4 sm:mt-0 mr-4 sm:mr-7 flex-1">
-              <div className="ml-2 text-center sm:text-left">
-                <div className="flex items-center gap-2">
-                  <h1 className="text-2xl pb-2 text-center sm:text-3xl font-bold capitalize">
+
+            {/* User Info */}
+            <div className="mt-10 sm:mt-0 sm:ml-56 text-center sm:text-left w-full sm:flex-1">
+              <div className="ml-0 sm:ml-2">
+                <div className="flex justify-center sm:justify-start items-center gap-2">
+                  <h1 className="text-2xl sm:text-3xl font-bold capitalize">
                     {user.fullName}
                   </h1>
                   <motion.div
@@ -248,7 +254,7 @@ const UserProfile = (props) => {
                     />
                   </motion.div>
                 </div>
-                <h1 className="text-sm sm:text-lg HelvR">@{user.username}</h1>
+                <h2 className="text-sm sm:text-lg HelvR">@{user.username}</h2>
                 <p className="text-sm sm:text-base HelvR text-gray-800">
                   {user.bio}
                 </p>
@@ -257,51 +263,51 @@ const UserProfile = (props) => {
                 </p>
               </div>
             </div>
-            {loggedInUserId === user._id ? (
-              <button className="mt-4 sm:mt-0 px-3 sm:px-4 py-1 sm:py-2 bg-indigo-500 text-white rounded-md hover:bg-blue-600 transition duration-300">
-                Your Profile
-              </button>
-            ) : (
-              <div className="space-x-2 mt-4 sm:mt-0">
-                {isFriend ? (
+
+            {/* Buttons */}
+            <div className="mt-4 sm:mt-0 flex flex-wrap justify-center sm:justify-end gap-2 w-full sm:w-auto sm:ml-auto">
+              {loggedInUserId === user._id ? (
+                <button className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-blue-600 transition duration-300">
+                  Your Profile
+                </button>
+              ) : isFriend ? (
+                <button
+                  className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
+                  onClick={handleUnfriend}
+                >
+                  Unfriend
+                </button>
+              ) : hasReceivedRequest ? (
+                <>
                   <button
-                    className="px-3 sm:px-4 py-1 sm:py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
-                    onClick={handleUnfriend}
+                    className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300"
+                    onClick={handleAcceptRequest}
                   >
-                    Unfriend
+                    Accept
                   </button>
-                ) : hasReceivedRequest ? (
-                  <>
-                    <button
-                      className="px-3 sm:px-4 py-1 sm:py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300"
-                      onClick={handleAcceptRequest}
-                    >
-                      Accept
-                    </button>
-                    <button
-                      className="px-3 sm:px-4 py-1 sm:py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
-                      onClick={handleRejectRequest}
-                    >
-                      Reject
-                    </button>
-                  </>
-                ) : hasSentRequest ? (
                   <button
-                    className="px-3 sm:px-4 py-1 sm:py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition duration-300"
-                    onClick={handleCancelRequest}
+                    className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300"
+                    onClick={handleRejectRequest}
                   >
-                    Cancel Request
+                    Reject
                   </button>
-                ) : (
-                  <button
-                    className="px-3 sm:px-4 py-1 sm:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
-                    onClick={handleSendRequest}
-                  >
-                    Add Friend
-                  </button>
-                )}
-              </div>
-            )}
+                </>
+              ) : hasSentRequest ? (
+                <button
+                  className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition duration-300"
+                  onClick={handleCancelRequest}
+                >
+                  Cancel Request
+                </button>
+              ) : (
+                <button
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
+                  onClick={handleSendRequest}
+                >
+                  Add Friend
+                </button>
+              )}
+            </div>
           </motion.div>
 
           <nav className="border-b border-gray-200 mt-2">

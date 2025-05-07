@@ -11,7 +11,12 @@ connectToMongo()
   app.listen(port, ()=>{
     console.log(`App listening on port: ${port}`)
   })
-})
-.catch((error)=>{
-  console.error("Mongo db connection failed", error)
-})
+  })
+  .catch((error) => {
+    console.error('MongoDB connection failed:', error);
+  });
+
+// Export app as the serverless function for Vercel
+export default (req, res) => {
+  app(req, res); // Express app will handle the request
+};

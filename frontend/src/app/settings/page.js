@@ -155,54 +155,63 @@ const SettingsPage = () => {
 
   const renderImageForm = (field) => {
     if (activeField !== field) return null;
-
+  
+    const isImageField = field === "profilePicture" || field === "coverImage";
+  
     return (
-      <div className="flex gap-4 mt-4">
-        {field === "profilePicture" || field === "coverImage" ? (
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              setImageFiles({
-                ...imageFiles,
-                [field]: e.target.files[0], /// Only take the first file
-              });
-            }}
-          />
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mt-4 w-full">
+        {isImageField ? (
+          <label className="w-full md:w-auto flex flex-col gap-2">
+            <span className="text-sm font-medium text-gray-700">
+              Upload {field === "profilePicture" ? "Profile Picture" : "Cover Image"}
+            </span>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) =>
+                setImageFiles({
+                  ...imageFiles,
+                  [field]: e.target.files[0],
+                })
+              }
+              className="block w-full text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </label>
         ) : (
           <input
             type={field === "password" ? "password" : "text"}
-            placeholder={`Enter new ${field} ${
-              field === "dob" ? "DD/MM/YYYY" : ""
-            }`}
-            className={`w-full p-3 mb-2 border ${
+            placeholder={`Enter new ${field} ${field === "dob" ? "DD/MM/YYYY" : ""}`}
+            className={`w-full p-3 border ${
               errors[field] ? "border-red-500" : "border-gray-300"
             } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200`}
             value={formData[field]}
             onChange={handleInputChange}
           />
         )}
-
-        <motion.button
-          onClick={handleSave}
-          className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <FiSave className="inline mr-1" /> Save Changes
-        </motion.button>
-
-        <motion.button
-          onClick={handleCancel}
-          className="bg-gray-400 text-white px-4 py-2 rounded-lg shadow-md hover:shadow-lg"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <FiX className="inline mr-1" /> Cancel
-        </motion.button>
+  
+        <div className="flex gap-2 mt-2 md:mt-0">
+          <motion.button
+            onClick={handleSave}
+            className="flex items-center gap-1 bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-4 py-2 rounded-lg shadow hover:shadow-lg transition-all"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <FiSave /> Save
+          </motion.button>
+  
+          <motion.button
+            onClick={handleCancel}
+            className="flex items-center gap-1 bg-gray-400 text-white px-4 py-2 rounded-lg shadow hover:shadow-lg transition-all"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <FiX /> Cancel
+          </motion.button>
+        </div>
       </div>
     );
   };
+  
 
   const renderEditForm = (field) => {
     if (activeField !== field) return null;
