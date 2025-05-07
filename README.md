@@ -44,7 +44,10 @@
 ![User Profile](./public/screenshots/profile.png)
 
 ### 📝 Post Creation
-![Post Creation](./public/screenshots/profile.png)
+![Post Creation](./public/screenshots/post-section.png)
+
+### 📝 Story Section
+![Story Creation](./public/screenshots/stories-section.png)
 
 ---
 
