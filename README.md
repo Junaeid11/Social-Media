@@ -58,10 +58,10 @@ Collecting workspace information
 
 Filtering to most relevant information
 
-├── frontend/ # Frontend application │ 
-├── backend/ # Backend application │ 
-├── public/ # Public assets │ 
-├
+├── frontend/ # Frontend application 
+├── backend/ # Backend application 
+├── public/ # Public assets 
+
 
 ---
 
