@@ -58,7 +58,10 @@ Collecting workspace information
 
 Filtering to most relevant information
 
-├── frontend/ # Frontend application │ ├── public/ # Public assets │ ├── src/ # Source code │ ├── components/ # Reusable UI components │ ├── styles/ # Global styles │ └── utils/ # Utility functions ├── backend/ # Backend application │ ├── src/ # Source code │ ├── config/ # Configuration files │ ├── controllers/ # API controllers │ ├── models/ # Database models │ ├── routes/ # API routes │ └── utils/ # Utility function
+├── frontend/ # Frontend application │ 
+├── backend/ # Backend application │ 
+├── public/ # Public assets │ 
+├
 
 ---
 
