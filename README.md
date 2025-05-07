@@ -58,10 +58,11 @@ Collecting workspace information
 
 Filtering to most relevant information
 
-├── frontend/ # Frontend application 
-├── backend/ # Backend application 
-├── public/ # Public assets 
-
+```
+├── frontend/   # Frontend application – Contains the React-based Next.js app
+├── backend/    # Backend application – Handles API and server-side logic
+├── public/     # Public assets – Static files like images and icons
+```
 
 ---
 
