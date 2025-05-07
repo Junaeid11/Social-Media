@@ -564,7 +564,7 @@ export default function LoginPage() {
                     ))}
                   </div>
                   <p className="text-sm opacity-80">
-                    Trusted by 5M+ users worldwide
+                    Trusted by lolfeed 
                   </p>
                 </motion.div>
               </div>

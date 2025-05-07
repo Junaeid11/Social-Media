@@ -1,6 +1,6 @@
 # 🌟 LolFeed – A Modern Social Media Platform
 
-![LolFeed Banner](./public/screenshots/banner.png)
+![LolFeed Banner](./public/screenshots/screencapture-localhost-3000-login-2025-05-08-00_30_45.png)
 
 **Live Demo**: [https://lolfeed.vercel.app](https://lolfeed.vercel.app)
 

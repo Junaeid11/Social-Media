@@ -2,7 +2,7 @@ import RootLayoutClient from "@/components/RootLayoutClient";
 import "./globals.css";
 
 export const metadata = {
-  title: "LOLfeed",
+  title: "lolfeed",
   description: "Social site",
 };
 
